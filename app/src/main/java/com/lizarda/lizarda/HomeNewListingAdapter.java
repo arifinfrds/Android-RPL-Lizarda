@@ -13,11 +13,11 @@ import java.util.ArrayList;
  * Created by arifinfrds on 10/31/17.
  */
 
-public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.ViewHolder> {
+public class HomeNewListingAdapter extends RecyclerView.Adapter<HomeNewListingAdapter.ViewHolder> {
 
     private ArrayList<Model> mModels;
 
-    public HomeSuggestAdapter(ArrayList<Model> models) {
+    public HomeNewListingAdapter(ArrayList<Model> models) {
         mModels = models;
     }
 
@@ -25,6 +25,7 @@ public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_list_home, parent, false);
+
         return new ViewHolder(itemView);
     }
 
