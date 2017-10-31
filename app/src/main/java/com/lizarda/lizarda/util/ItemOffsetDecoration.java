@@ -1,4 +1,4 @@
-package com.lizarda.lizarda;
+package com.lizarda.lizarda.util;
 
 /**
  * Created by arifinfrds on 10/31/17.

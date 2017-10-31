@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/md_grey_100"
-    tools:context="com.lizarda.lizarda.HomeFragment">
+    tools:context="com.lizarda.lizarda.ui.home.HomeFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -98,6 +98,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
                     </android.support.constraint.ConstraintLayout>
 
 

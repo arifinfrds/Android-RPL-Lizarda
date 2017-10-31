@@ -1,4 +1,4 @@
-package com.lizarda.lizarda;
+package com.lizarda.lizarda.model;
 
 import java.util.ArrayList;
 

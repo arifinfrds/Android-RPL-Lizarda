@@ -1,4 +1,4 @@
-package com.lizarda.lizarda;
+package com.lizarda.lizarda.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +15,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.lizarda.lizarda.R;
+import com.lizarda.lizarda.ui.home.HomeFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity
                 // fragment = new JadwalFragment();
                 break;
             case R.id.nav_browse:
-                title = getResources().getString(R.string.title_browse);
+                title = getResources().getString(R.string.title_home);
                 fragment = new HomeFragment();
                 break;
             case R.id.nav_settings:
