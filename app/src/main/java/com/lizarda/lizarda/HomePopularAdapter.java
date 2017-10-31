@@ -13,11 +13,11 @@ import java.util.ArrayList;
  * Created by arifinfrds on 10/31/17.
  */
 
-public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.ViewHolder> {
+public class HomePopularAdapter extends RecyclerView.Adapter<HomePopularAdapter.ViewHolder> {
 
     private ArrayList<Model> mModels;
 
-    public HomeSuggestAdapter(ArrayList<Model> models) {
+    public HomePopularAdapter(ArrayList<Model> models) {
         mModels = models;
     }
 

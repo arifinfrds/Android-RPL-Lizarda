@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,9 @@ public class HomeFragment extends Fragment {
     // MARK: - Properties
     private ArrayList<Model> mModels;
 
+    @BindView(R.id.rv_kategori_home)
+    RecyclerView mRvKategori;
+
     @BindView(R.id.rv_suggest_home)
     RecyclerView mRvSuggest;
 
@@ -37,6 +41,10 @@ public class HomeFragment extends Fragment {
     @BindView(R.id.rv_new_listing_home)
     RecyclerView mRvNewListing;
 
+    @BindView(R.id.btn_more_suggest_home)
+    Button mBtnMoreSuggest;
+
+    private HomeKategoriAdapter mHomeKategoriAdapter;
     private HomeSuggestAdapter mHomeSuggestAdapter;
 
 
@@ -79,20 +87,38 @@ public class HomeFragment extends Fragment {
 
         mModels = Model.generateModels();
 
+        mHomeKategoriAdapter = new HomeKategoriAdapter(mModels);
         mHomeSuggestAdapter = new HomeSuggestAdapter(mModels);
+
+        setupRecyclerView(mRvKategori);
         setupRecyclerView(mRvSuggest);
+        setupRecyclerView(mRvPopular);
+        setupRecyclerView(mRvNewListing);
 
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        recyclerView.setLayoutManager(
-                new LinearLayoutManager(
-                        getContext(),
-                        LinearLayoutManager.HORIZONTAL,
-                        false
-                )
-        );
-        recyclerView.setAdapter(mHomeSuggestAdapter);
+
+        if (recyclerView.getId() == R.id.rv_kategori_home) {
+            recyclerView.setLayoutManager(
+                    new LinearLayoutManager(
+                            getContext(),
+                            LinearLayoutManager.HORIZONTAL,
+                            false
+                    )
+            );
+            recyclerView.setAdapter(mHomeKategoriAdapter);
+        } else {
+            recyclerView.setLayoutManager(
+                    new LinearLayoutManager(
+                            getContext(),
+                            LinearLayoutManager.HORIZONTAL,
+                            false
+                    )
+            );
+            recyclerView.setAdapter(mHomeSuggestAdapter);
+        }
+
 
     }
 }
