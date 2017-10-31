@@ -1,4 +1,4 @@
-package com.lizarda.lizarda;
+package com.lizarda.lizarda.ui.home;
 
 
 import android.os.Bundle;
@@ -11,8 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.lizarda.lizarda.model.Model;
+import com.lizarda.lizarda.R;
+
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,6 +48,8 @@ public class HomeFragment extends Fragment {
 
     private HomeKategoriAdapter mHomeKategoriAdapter;
     private HomeSuggestAdapter mHomeSuggestAdapter;
+    private HomePopularAdapter mHomePopularAdapter;
+    private HomeNewListingAdapter mHomeNewListingAdapter;
 
 
     public HomeFragment() {
@@ -88,7 +92,7 @@ public class HomeFragment extends Fragment {
         mModels = Model.generateModels();
 
         mHomeKategoriAdapter = new HomeKategoriAdapter(mModels);
-        mHomeSuggestAdapter = new HomeSuggestAdapter(mModels);
+        mHomeSuggestAdapter = new HomeSuggestAdapter(mModels, getContext());
 
         setupRecyclerView(mRvKategori);
         setupRecyclerView(mRvSuggest);
@@ -99,24 +103,48 @@ public class HomeFragment extends Fragment {
 
     private void setupRecyclerView(RecyclerView recyclerView) {
 
-        if (recyclerView.getId() == R.id.rv_kategori_home) {
-            recyclerView.setLayoutManager(
-                    new LinearLayoutManager(
-                            getContext(),
-                            LinearLayoutManager.HORIZONTAL,
-                            false
-                    )
-            );
-            recyclerView.setAdapter(mHomeKategoriAdapter);
-        } else {
-            recyclerView.setLayoutManager(
-                    new LinearLayoutManager(
-                            getContext(),
-                            LinearLayoutManager.HORIZONTAL,
-                            false
-                    )
-            );
-            recyclerView.setAdapter(mHomeSuggestAdapter);
+
+        switch (recyclerView.getId()) {
+            case R.id.rv_kategori_home:
+                recyclerView.setAdapter(mHomeKategoriAdapter);
+                recyclerView.setLayoutManager(
+                        new LinearLayoutManager(
+                                getContext(),
+                                LinearLayoutManager.HORIZONTAL,
+                                false
+                        )
+                );
+                break;
+            case R.id.rv_suggest_home:
+                recyclerView.setAdapter(mHomeSuggestAdapter);
+                recyclerView.setLayoutManager(
+                        new LinearLayoutManager(
+                                getContext(),
+                                LinearLayoutManager.HORIZONTAL,
+                                false
+                        )
+                );
+                break;
+            case R.id.rv_popular_home:
+                recyclerView.setAdapter(mHomeSuggestAdapter);
+                recyclerView.setLayoutManager(
+                        new LinearLayoutManager(
+                                getContext(),
+                                LinearLayoutManager.HORIZONTAL,
+                                false
+                        )
+                );
+                break;
+            case R.id.rv_new_listing_home:
+                recyclerView.setAdapter(mHomeSuggestAdapter);
+                recyclerView.setLayoutManager(
+                        new LinearLayoutManager(
+                                getContext(),
+                                LinearLayoutManager.HORIZONTAL,
+                                false
+                        )
+                );
+                break;
         }
 
 
