@@ -1,10 +1,15 @@
 package com.lizarda.lizarda.ui;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +22,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.lizarda.lizarda.R;
+import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
 import com.lizarda.lizarda.ui.home.HomeFragment;
 
 public class MainActivity extends AppCompatActivity
@@ -70,7 +76,76 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        handleSearchView(menu);
+
         return true;
+    }
+
+    private void handleSearchView(Menu menu) {
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                if (query == null) {
+                    Toast.makeText(MainActivity.this, "Harap isi keyword pencarian,"
+                            , Toast.LENGTH_SHORT).show();
+                } else {
+                    if (query.length() <= 0 || query.isEmpty()) {
+                        Toast.makeText(MainActivity.this, "Harap isi keyword pencarian,"
+                                , Toast.LENGTH_SHORT).show();
+                    } else {
+                        performSearch(query);
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+
+        MenuItem searchMenuItem = menu.getItem(0);
+
+        MenuItemCompat.setOnActionExpandListener(searchMenuItem,
+                new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                        // Refresh here with full list.
+                        return true;
+                    }
+                });
+
+    }
+
+    private void performSearch(String query) {
+        Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT).show();
+
+        // cek pencarian apakah ada di database
+        // kalo ada, ke detail activity
+        // kalo nggk ada, kasih notif nggk ada
+
+        // disumsikan ada
+        navigateToDetailProdukActivity();
+
+    }
+
+    private void navigateToDetailProdukActivity() {
+        Intent intent = new Intent(MainActivity.this, DetailProdukActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -81,6 +156,8 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
             Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
+
+
             return true;
         }
 
@@ -108,7 +185,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void displayView(int viewId) {
-
         Fragment fragment = null;
         String title = getString(R.string.app_name);
 
