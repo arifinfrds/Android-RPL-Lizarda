@@ -14,8 +14,14 @@
             android:label="@string/title_activity_detail_produk"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.Sign.SignupActivity">
+
+        </activity>
+        <activity android:name=".ui.Sign.LoginActivity" />
+        <activity android:name=".ui.Sign.ResetPasswordActivity" />
+        <activity android:name=".ui.Sign.ProfileActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

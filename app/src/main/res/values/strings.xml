@@ -26,7 +26,6 @@
     <string name="content_label_harga">Rp. 5000000</string>
 
 
-
     <string name="action_sign_in_short">Register</string>
     <string name="email">Email</string>
     <string name="minimum_password">Password too short, enter minimum 6 characters!</string>
