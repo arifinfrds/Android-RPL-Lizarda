@@ -24,4 +24,9 @@
     <string name="sign_in">Sign in</string>
     <string name="label_harga">Harga</string>
     <string name="content_label_harga">Rp. 5000000</string>
+    <string name="comment_user">Screenshots on the iPhone X don’t have the notch... but they do look awkwardly tall.</string>
+    <string name="nama_user">danielemillio</string>
+    <string name="hint_comment">comment . . .</string>
+    <string name="send">Send</string>
+    <string name="title_profile">Profile</string>
 </resources>

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -44,6 +43,9 @@ public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+
+
+
         holder.mContainerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,8 +67,10 @@ public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View mView;
-        public ImageView mIvDivisi;
-        public TextView mTvNamaDivisi;
+
+
+        @BindView(R.id.iv_item_home)
+        ImageView mIvThumbnail;
 
         @BindView(R.id.frameLayout_item_suggest_container)
         FrameLayout mContainerLayout;
