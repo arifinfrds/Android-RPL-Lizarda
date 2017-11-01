@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "114499706932",
+    "firebase_url": "https://lizarda-5c0bb.firebaseio.com",
+    "project_id": "lizarda-5c0bb",
+    "storage_bucket": "lizarda-5c0bb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114499706932:android:23bfec6b88d10cf9",
+        "android_client_info": {
+          "package_name": "com.example.akihito.lizarda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "114499706932-pffrrc2q7r675r4cbbn33akuv4lisg4o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeslNRJTdr9Mg03WLoAIyjgIwFXKvoalU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114499706932:android:bff6006c8d26c829",
+        "android_client_info": {
+          "package_name": "com.lizarda.lizarda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "114499706932-rfnms16ah1qbnv8t1ob5ukbr1o01ta31.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lizarda.lizarda",
+            "certificate_hash": "dc9fc51df3eec35f4ef543762c47e591ea4fc063"
+          }
+        },
+        {
+          "client_id": "114499706932-pffrrc2q7r675r4cbbn33akuv4lisg4o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeslNRJTdr9Mg03WLoAIyjgIwFXKvoalU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "114499706932-pffrrc2q7r675r4cbbn33akuv4lisg4o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
