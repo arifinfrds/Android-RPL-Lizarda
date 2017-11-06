@@ -3,7 +3,6 @@ package com.lizarda.lizarda.ui;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,10 +21,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.lizarda.lizarda.R;
+import com.lizarda.lizarda.ui.Sign.ProfileActivity;
 import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
 import com.lizarda.lizarda.ui.home.HomeFragment;
 
@@ -116,8 +116,8 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        String[] from = new String[] {"cafe_name"};
-        int[] to = new int[] {R.id.tv_suggestion_text};
+        String[] from = new String[]{"cafe_name"};
+        int[] to = new int[]{R.id.tv_suggestion_text};
 
         SimpleCursorAdapter searchCursorAdapter = new SimpleCursorAdapter(
                 this,
@@ -188,12 +188,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            displayView(id);
+        if (id == R.id.nav_logout) {
+            logout();
         } else if (id == R.id.nav_browse) {
             displayView(id);
-
         } else if (id == R.id.nav_settings) {
+            displayView(id);
+        } else if (id == R.id.nav_profile) {
             displayView(id);
         }
 
@@ -202,15 +203,16 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void logout() {
+        FirebaseAuth.getInstance().signOut();
+        finish();
+    }
+
     private void displayView(int viewId) {
         Fragment fragment = null;
         String title = getString(R.string.app_name);
 
         switch (viewId) {
-            case R.id.nav_camera:
-                title = "Sign in";
-                // fragment = new JadwalFragment();
-                break;
             case R.id.nav_browse:
                 title = getResources().getString(R.string.title_home);
                 fragment = new HomeFragment();
@@ -218,6 +220,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_settings:
                 title = getResources().getString(R.string.title_settings);
                 // fragment = new AboutUsFragment();
+                break;
+            case R.id.nav_profile:
+                navigateToProfileActivity();
                 break;
 
         }
@@ -235,6 +240,11 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+    }
+
+    private void navigateToProfileActivity() {
+        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+        startActivity(intent);
     }
 
 }
