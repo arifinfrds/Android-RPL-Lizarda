@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/md_indigo_500</color>
-    <color name="colorPrimaryDark">@color/md_indigo_700</color>
-    <color name="colorAccent">@color/md_red_A200</color>
-    <color name="colorSecondaryInformation">@color/md_indigo_300</color>
+    <color name="colorPrimary">@color/md_brown_500</color>
+    <color name="colorPrimaryDark">@color/md_brown_700</color>
+    <color name="colorAccent">@color/md_amber_A400</color>
+    <color name="colorSecondaryInformation">@color/md_brown_300</color>
 
     <!-- google's material design colours from
 http://www.google.com/design/spec/style/color.html#color-ui-color-palette -->

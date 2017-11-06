@@ -55,4 +55,10 @@
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
 
+    <string name="comment_user">Screenshots on the iPhone X don’t have the notch... but they do look awkwardly tall.</string>
+    <string name="nama_user">danielemillio</string>
+    <string name="hint_comment">comment . . .</string>
+    <string name="send">Send</string>
+    <string name="title_profile">Profile</string>
+    <string name="logout">Logout</string>
 </resources>
