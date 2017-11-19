@@ -1,6 +1,7 @@
 package com.lizarda.lizarda.ui.home;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,8 @@ import android.widget.Button;
 
 import com.lizarda.lizarda.model.Model;
 import com.lizarda.lizarda.R;
+import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
+import com.lizarda.lizarda.ui.list_produk.DetailCategoryListActivity;
 
 import java.util.ArrayList;
 
@@ -20,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements HomeKategoriCallback {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -91,7 +94,7 @@ public class HomeFragment extends Fragment {
 
         mModels = Model.generateModels();
 
-        mHomeKategoriAdapter = new HomeKategoriAdapter(mModels);
+        mHomeKategoriAdapter = new HomeKategoriAdapter(mModels, this);
         mHomeSuggestAdapter = new HomeSuggestAdapter(mModels, getContext());
 
         setupRecyclerView(mRvKategori);
@@ -99,6 +102,16 @@ public class HomeFragment extends Fragment {
         setupRecyclerView(mRvPopular);
         setupRecyclerView(mRvNewListing);
 
+    }
+
+    @Override
+    public void onKategoriClick() {
+        navigateToDetailCategoryListActivity();
+    }
+
+    private void navigateToDetailCategoryListActivity() {
+        Intent intent = new Intent(getContext(), DetailCategoryListActivity.class);
+        getContext().startActivity(intent);
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {

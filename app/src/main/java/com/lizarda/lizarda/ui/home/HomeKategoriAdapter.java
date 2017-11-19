@@ -1,9 +1,11 @@
 package com.lizarda.lizarda.ui.home;
 
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,9 +21,11 @@ import java.util.ArrayList;
 public class HomeKategoriAdapter extends RecyclerView.Adapter<HomeKategoriAdapter.ViewHolder> {
 
     private ArrayList<Model> mModels;
+    private HomeKategoriCallback mCallback;
 
-    public HomeKategoriAdapter(ArrayList<Model> models) {
+    public HomeKategoriAdapter(ArrayList<Model> models, HomeKategoriCallback callback) {
         mModels = models;
+        mCallback = callback;
     }
 
     @Override
@@ -33,6 +37,13 @@ public class HomeKategoriAdapter extends RecyclerView.Adapter<HomeKategoriAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+
+        holder.mContainerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.onKategoriClick();
+            }
+        });
 
     }
 
@@ -46,9 +57,13 @@ public class HomeKategoriAdapter extends RecyclerView.Adapter<HomeKategoriAdapte
         public ImageView mIvDivisi;
         public TextView mTvNamaDivisi;
 
+        public FrameLayout mContainerLayout;
+
         public ViewHolder(View view) {
             super(view);
             mView = view;
+
+            mContainerLayout = view.findViewById(R.id.container_kategori_home);
 //            mIvDivisi = (ImageView) view.findViewById(R.id.iv_divisi_jadwal);
 //            mTvNamaDivisi = (TextView) view.findViewById(R.id.tv_nama_divisi_jadwal);
         }
