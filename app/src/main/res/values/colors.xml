@@ -5,6 +5,8 @@
     <color name="colorAccent">@color/md_amber_A400</color>
     <color name="colorSecondaryInformation">@color/md_brown_300</color>
 
+    <color name="colorDivider">#1F000000</color>
+
     <!-- google's material design colours from
 http://www.google.com/design/spec/style/color.html#color-ui-color-palette -->
 
@@ -302,8 +304,6 @@ http://www.google.com/design/spec/style/color.html#color-ui-color-palette -->
     <color name="md_blue_grey_800">#37474F</color>
     <color name="md_blue_grey_900">#263238</color>
 
-
-    
 
     <color name="bg_login">#26ae90</color>
     <color name="bg_register">#2e3237</color>
