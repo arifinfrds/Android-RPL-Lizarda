@@ -13,9 +13,7 @@
             android:name=".ui.detail_produk.DetailProdukActivity"
             android:label="@string/title_activity_detail_produk"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.Sign.SignupActivity">
-
-        </activity>
+        <activity android:name=".ui.Sign.SignupActivity"></activity>
         <activity android:name=".ui.Sign.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,12 +22,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.Sign.ResetPasswordActivity" />
-        <activity android:name=".ui.Sign.ProfileActivity"></activity>
-
+        <activity android:name=".ui.Sign.ProfileActivity" />
         <activity
             android:name=".ui.MainActivity"
             android:label="Main"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.list_produk.DetailCategoryListActivity"
+            android:label="@string/title_activity_detail_category_list"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
