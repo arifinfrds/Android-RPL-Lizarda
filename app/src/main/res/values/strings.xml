@@ -61,4 +61,6 @@
     <string name="send">Send</string>
     <string name="title_profile">Profile</string>
     <string name="logout">Logout</string>
+    <string name="en_buy">Buy</string>
+    <string name="action_share">Share</string>
 </resources>
