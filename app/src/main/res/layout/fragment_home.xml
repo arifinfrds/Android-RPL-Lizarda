@@ -76,11 +76,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:layout_marginLeft="16dp"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
                             android:text="Suggest"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -137,17 +136,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:layout_marginLeft="16dp"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
                             android:text="Popular"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <Button
-                            android:id="@+id/button_4"
+                            android:id="@+id/btn_more_popular_home"
                             style="@style/Widget.AppCompat.Button.Borderless.Colored"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -196,18 +194,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginRight="16dp"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
                             android:text="New Listing"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <Button
-                            android:id="@+id/button_5"
+                            android:id="@+id/btn_more_new_listing_home"
                             style="@style/Widget.AppCompat.Button.Borderless.Colored"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

@@ -1,6 +1,6 @@
 package com.lizarda.lizarda.ui.home;
 
-import android.support.constraint.ConstraintLayout;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +9,17 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.lizarda.lizarda.model.Model;
+import com.lizarda.lizarda.Const;
+import com.lizarda.lizarda.model.Kategori;
 import com.lizarda.lizarda.R;
+import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by arifinfrds on 10/31/17.
@@ -20,12 +27,15 @@ import java.util.ArrayList;
 
 public class HomeKategoriAdapter extends RecyclerView.Adapter<HomeKategoriAdapter.ViewHolder> {
 
-    private ArrayList<Model> mModels;
+    private ArrayList<Kategori> mCategories;
     private HomeKategoriCallback mCallback;
+    private Context mContext;
 
-    public HomeKategoriAdapter(ArrayList<Model> models, HomeKategoriCallback callback) {
-        mModels = models;
+    public HomeKategoriAdapter(ArrayList<Kategori> categories, HomeKategoriCallback callback,
+                               Context context) {
+        mCategories = categories;
         mCallback = callback;
+        mContext = context;
     }
 
     @Override
@@ -38,6 +48,9 @@ public class HomeKategoriAdapter extends RecyclerView.Adapter<HomeKategoriAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        Picasso.with(mContext).load(mCategories.get(position).getImageResId()).into(holder.mIvKategori);
+        holder.mTvNamaKategori.setText(mCategories.get(position).getNama());
+
         holder.mContainerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,23 +62,28 @@ public class HomeKategoriAdapter extends RecyclerView.Adapter<HomeKategoriAdapte
 
     @Override
     public int getItemCount() {
-        return mModels.size();
+        return mCategories.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public View mView;
-        public ImageView mIvDivisi;
-        public TextView mTvNamaDivisi;
 
-        public FrameLayout mContainerLayout;
+        @BindView(R.id.iv_item_home)
+        ImageView mIvKategori;
+
+        @BindView(R.id.tv_nama_kategori_item_home)
+        TextView mTvNamaKategori;
+
+        @BindView(R.id.container_kategori_home)
+        FrameLayout mContainerLayout;
+
+        public View mView;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
 
-            mContainerLayout = view.findViewById(R.id.container_kategori_home);
-//            mIvDivisi = (ImageView) view.findViewById(R.id.iv_divisi_jadwal);
-//            mTvNamaDivisi = (TextView) view.findViewById(R.id.tv_nama_divisi_jadwal);
+            ButterKnife.bind(this, itemView);
+
         }
     }
 

@@ -28,7 +28,7 @@
             android:label="Main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.list_produk.DetailCategoryListActivity"
+            android:name=".ui.list_produk.ProductListActivity"
             android:label="@string/title_activity_detail_category_list"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
