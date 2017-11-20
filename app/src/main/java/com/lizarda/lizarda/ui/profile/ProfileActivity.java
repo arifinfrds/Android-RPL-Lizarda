@@ -1,14 +1,21 @@
-package com.lizarda.lizarda.ui.Sign;
+package com.lizarda.lizarda.ui.profile;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.lizarda.lizarda.R;
+import com.lizarda.lizarda.ui.AddProductActivity;
+import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
 
 
 public class ProfileActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +27,20 @@ public class ProfileActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateToAddProductActivity();
+            }
+        });
 
+
+    }
+
+    private void navigateToAddProductActivity() {
+        Intent intent = new Intent(this, AddProductActivity.class);
+        startActivity(intent);
     }
 
     @Override
