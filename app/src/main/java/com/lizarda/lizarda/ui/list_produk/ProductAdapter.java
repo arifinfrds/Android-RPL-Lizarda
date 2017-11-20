@@ -13,6 +13,9 @@ import com.lizarda.lizarda.model.Product;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by arifinfrds on 11/20/17.
  */
@@ -52,21 +55,23 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View mView;
+
+        @BindView(R.id.container_list_item)
+        FrameLayout mContainer;
+
         public ImageView mIvThumbnail;
         public TextView mTvTitle;
         public TextView mTvDetail;
-
-        public FrameLayout mContainer;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
 
-            mContainer = view.findViewById(R.id.container_list_item);
-
-            mIvThumbnail = view.findViewById(R.id.iv_thumbnail_detail_category);
-            mTvTitle = view.findViewById(R.id.tv_title);
-            mTvDetail = view.findViewById(R.id.tv_description_detail);
+            ButterKnife.bind(this, view);
+//
+//            mIvThumbnail = view.findViewById(R.id.iv_thumbnail_detail_category);
+//            mTvTitle = view.findViewById(R.id.tv_title);
+//            mTvDetail = view.findViewById(R.id.tv_description_detail);
 
         }
     }

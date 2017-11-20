@@ -12,18 +12,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.lizarda.lizarda.model.Kategori;
 import com.lizarda.lizarda.model.Model;
 import com.lizarda.lizarda.R;
-import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
-import com.lizarda.lizarda.ui.list_produk.DetailCategoryListActivity;
+import com.lizarda.lizarda.ui.list_produk.ProductListActivity;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.lizarda.lizarda.Const.BUTTON_ID_KEY;
 
-public class HomeFragment extends Fragment implements HomeKategoriCallback {
+
+public class HomeFragment extends Fragment implements HomeKategoriCallback, View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -48,6 +50,12 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback {
 
     @BindView(R.id.btn_more_suggest_home)
     Button mBtnMoreSuggest;
+
+    @BindView(R.id.btn_more_popular_home)
+    Button mBtnMorePopular;
+
+    @BindView(R.id.btn_more_new_listing_home)
+    Button mBtnMoreNewListing;
 
     private HomeKategoriAdapter mHomeKategoriAdapter;
     private HomeSuggestAdapter mHomeSuggestAdapter;
@@ -94,14 +102,48 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback {
 
         mModels = Model.generateModels();
 
-        mHomeKategoriAdapter = new HomeKategoriAdapter(mModels, this);
+        mHomeKategoriAdapter = new HomeKategoriAdapter(Kategori.getCategories(), this, getContext());
         mHomeSuggestAdapter = new HomeSuggestAdapter(mModels, getContext());
+
+        mBtnMoreSuggest.setOnClickListener(this);
+        mBtnMorePopular.setOnClickListener(this);
+        mBtnMoreNewListing.setOnClickListener(this);
 
         setupRecyclerView(mRvKategori);
         setupRecyclerView(mRvSuggest);
         setupRecyclerView(mRvPopular);
         setupRecyclerView(mRvNewListing);
+    }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_more_suggest_home:
+                navigateToProductListActivity(R.id.btn_more_suggest_home);
+                break;
+            case R.id.btn_more_popular_home:
+                navigateToProductListActivity(R.id.btn_more_popular_home);
+                break;
+            case R.id.btn_more_new_listing_home:
+                navigateToProductListActivity(R.id.btn_more_new_listing_home);
+                break;
+        }
+    }
+
+    private void navigateToProductListActivity(int fromButtonId) {
+
+        Intent intent = new Intent(getContext(), ProductListActivity.class);
+
+        if (fromButtonId == R.id.btn_more_suggest_home) {
+            intent.putExtra(BUTTON_ID_KEY, R.id.btn_more_suggest_home);
+
+        } else if (fromButtonId == R.id.btn_more_popular_home) {
+            intent.putExtra(BUTTON_ID_KEY, R.id.btn_more_popular_home);
+
+        } else if (fromButtonId == R.id.btn_more_new_listing_home) {
+            intent.putExtra(BUTTON_ID_KEY, R.id.btn_more_popular_home);
+        }
+        startActivity(intent);
     }
 
     @Override
@@ -110,53 +152,34 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback {
     }
 
     private void navigateToDetailCategoryListActivity() {
-        Intent intent = new Intent(getContext(), DetailCategoryListActivity.class);
+        Intent intent = new Intent(getContext(), ProductListActivity.class);
         getContext().startActivity(intent);
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
 
+        LinearLayoutManager horizontalLayout = new LinearLayoutManager(
+                getContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false
+        );
 
         switch (recyclerView.getId()) {
             case R.id.rv_kategori_home:
                 recyclerView.setAdapter(mHomeKategoriAdapter);
-                recyclerView.setLayoutManager(
-                        new LinearLayoutManager(
-                                getContext(),
-                                LinearLayoutManager.HORIZONTAL,
-                                false
-                        )
-                );
+                recyclerView.setLayoutManager(horizontalLayout);
                 break;
             case R.id.rv_suggest_home:
                 recyclerView.setAdapter(mHomeSuggestAdapter);
-                recyclerView.setLayoutManager(
-                        new LinearLayoutManager(
-                                getContext(),
-                                LinearLayoutManager.HORIZONTAL,
-                                false
-                        )
-                );
+                recyclerView.setLayoutManager(horizontalLayout);
                 break;
             case R.id.rv_popular_home:
                 recyclerView.setAdapter(mHomeSuggestAdapter);
-                recyclerView.setLayoutManager(
-                        new LinearLayoutManager(
-                                getContext(),
-                                LinearLayoutManager.HORIZONTAL,
-                                false
-                        )
-                );
+                recyclerView.setLayoutManager(horizontalLayout);
                 break;
             case R.id.rv_new_listing_home:
                 recyclerView.setAdapter(mHomeSuggestAdapter);
-                recyclerView.setLayoutManager(
-                        new LinearLayoutManager(
-                                getContext(),
-                                LinearLayoutManager.HORIZONTAL,
-                                false
-                        )
-                );
+                recyclerView.setLayoutManager(horizontalLayout);
                 break;
         }
 
