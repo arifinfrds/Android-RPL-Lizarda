@@ -13,7 +13,7 @@
             android:name=".ui.detail_produk.DetailProdukActivity"
             android:label="@string/title_activity_detail_produk"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.Sign.SignupActivity"></activity>
+        <activity android:name=".ui.Sign.SignupActivity" />
         <activity android:name=".ui.Sign.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.Sign.ResetPasswordActivity" />
-        <activity android:name=".ui.Sign.ProfileActivity" />
+        <activity android:name=".ui.profile.ProfileActivity" />
         <activity
             android:name=".ui.MainActivity"
             android:label="Main"
@@ -30,6 +30,10 @@
         <activity
             android:name=".ui.list_produk.ProductListActivity"
             android:label="@string/title_activity_detail_category_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.AddProductActivity"
+            android:label="@string/title_activity_add_product"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

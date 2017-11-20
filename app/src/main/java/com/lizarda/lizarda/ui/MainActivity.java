@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.lizarda.lizarda.R;
-import com.lizarda.lizarda.ui.Sign.ProfileActivity;
+import com.lizarda.lizarda.ui.profile.ProfileActivity;
 import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
 import com.lizarda.lizarda.ui.home.HomeFragment;
 
