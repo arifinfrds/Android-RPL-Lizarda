@@ -6,5 +6,5 @@ package com.lizarda.lizarda.ui.home;
 
 public interface HomeKategoriCallback {
 
-    void onKategoriClick();
+    void onKategoriClick(String kategori);
 }

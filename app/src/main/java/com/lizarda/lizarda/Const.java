@@ -12,6 +12,8 @@ public interface Const {
 
     String KEY_PRODUCT_ID = "KEY_PRODUCT_ID";
 
+    String KEY_KATEGORI = "KEY_KATEGORI";
+
     interface FIREBASE {
 
         String CHILD_USER = "User";

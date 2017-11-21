@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity
 
     private void createUser() {
         User user = new User(mUser.getUid(), mUser.getEmail(), NOT_SET, NOT_SET, false, 500000);
+
         mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).setValue(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

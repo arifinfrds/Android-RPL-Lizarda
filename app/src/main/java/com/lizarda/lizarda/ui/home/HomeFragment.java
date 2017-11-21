@@ -33,6 +33,7 @@ import butterknife.ButterKnife;
 
 import static com.lizarda.lizarda.Const.BUTTON_ID_KEY;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
+import static com.lizarda.lizarda.Const.KEY_KATEGORI;
 
 
 public class HomeFragment extends Fragment implements HomeKategoriCallback, View.OnClickListener {
@@ -193,12 +194,13 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
     }
 
     @Override
-    public void onKategoriClick() {
-        navigateToDetailCategoryListActivity();
+    public void onKategoriClick(String kategori) {
+        navigateToDetailCategoryListActivity(kategori);
     }
 
-    private void navigateToDetailCategoryListActivity() {
+    private void navigateToDetailCategoryListActivity(String kategori) {
         Intent intent = new Intent(getContext(), ProductListActivity.class);
+        intent.putExtra(KEY_KATEGORI, kategori);
         getContext().startActivity(intent);
     }
 

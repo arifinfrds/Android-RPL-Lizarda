@@ -46,7 +46,7 @@ public class HomeKategoriAdapter extends RecyclerView.Adapter<HomeKategoriAdapte
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
 
         Picasso.with(mContext).load(mCategories.get(position).getImageResId()).into(holder.mIvKategori);
         holder.mTvNamaKategori.setText(mCategories.get(position).getNama());
@@ -54,7 +54,7 @@ public class HomeKategoriAdapter extends RecyclerView.Adapter<HomeKategoriAdapte
         holder.mContainerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.onKategoriClick();
+                mCallback.onKategoriClick(mCategories.get(position).getNama());
             }
         });
 

@@ -28,7 +28,7 @@ public class Kategori {
 
     public static ArrayList<Kategori> getCategories() {
         ArrayList<Kategori> categories = new ArrayList<>();
-        categories.add(new Kategori(R.drawable.ic_kategori_chameleon, "Iguana"));
+        categories.add(new Kategori(R.drawable.ic_kategori_chameleon, "Bunglon"));
         categories.add(new Kategori(R.drawable.ic_kategori_snake, "Ular"));
         categories.add(new Kategori(R.drawable.ic_kategori_iguana, "Iguana"));
         return categories;

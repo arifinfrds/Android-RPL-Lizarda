@@ -27,6 +27,7 @@ import butterknife.ButterKnife;
 
 import static com.lizarda.lizarda.Const.BUTTON_ID_KEY;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
+import static com.lizarda.lizarda.Const.KEY_KATEGORI;
 import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
 
 public class ProductListActivity extends AppCompatActivity implements ListProdukCallback {
@@ -71,23 +72,53 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
         mExtras = getIntent().getExtras();
         if (mExtras != null) {
             mButtonMoreId = mExtras.getInt(BUTTON_ID_KEY);
+            String kategori = mExtras.getString(KEY_KATEGORI);
 
-            if (mButtonMoreId == R.id.btn_more_suggest_home) {
-                mActionBar.setTitle("Suggest");
-                // fetch suggest ...
-                fetchProduct();
+            if (kategori != null) {
+                fetchProduct(kategori);
+            } else {
+                if (mButtonMoreId == R.id.btn_more_suggest_home) {
+                    mActionBar.setTitle("Suggest");
+                    // fetch suggest ...
+                    fetchProduct();
+                }
+                if (mButtonMoreId == R.id.btn_more_popular_home) {
+                    mActionBar.setTitle("Popular");
+                    // fetch popular ...
+                    fetchProduct();
+                }
+                if (mButtonMoreId == R.id.btn_more_new_listing_home) {
+                    mActionBar.setTitle("New Listing");
+                    // fetch new listing ...
+                    fetchProduct();
+                }
             }
-            if (mButtonMoreId == R.id.btn_more_popular_home) {
-                mActionBar.setTitle("Popular");
-                // fetch popular ...
-                fetchProduct();
-            }
-            if (mButtonMoreId == R.id.btn_more_new_listing_home) {
-                mActionBar.setTitle("New Listing");
-                // fetch new listing ...
-                fetchProduct();
-            }
+
+
         }
+    }
+
+    private void fetchProduct(final String kategori) {
+        mDatabaseRef.child(CHILD_PRODUCT).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+                    Product product = productDataSnapshot.getValue(Product.class);
+
+                    if (product.getCategory().equalsIgnoreCase(kategori)) {
+                        mProducts.add(product);
+                    }
+                }
+                // updateUI
+                setupRecyclerView();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void fetchProduct() {
