@@ -10,6 +10,8 @@ public interface Const {
 
     String NOT_SET = "not set";
 
+    String KEY_PRODUCT_ID = "KEY_PRODUCT_ID";
+
     interface FIREBASE {
 
         String CHILD_USER = "User";
