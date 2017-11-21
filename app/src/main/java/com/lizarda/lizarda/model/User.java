@@ -8,18 +8,20 @@ public class User {
 
     private String id;
     private String email;
+    private String nama;
     private String photoUrl;
-    private String idAdmin;
+    private boolean isAdmin;
     private double saldo;
 
     public User() {
     }
 
-    public User(String id, String email, String photoUrl, String idAdmin, double saldo) {
+    public User(String id, String email, String nama, String photoUrl, boolean isAdmin, double saldo) {
         this.id = id;
         this.email = email;
+        this.nama = nama;
         this.photoUrl = photoUrl;
-        this.idAdmin = idAdmin;
+        this.isAdmin = isAdmin;
         this.saldo = saldo;
     }
 
@@ -39,6 +41,14 @@ public class User {
         this.email = email;
     }
 
+    public String getNama() {
+        return nama;
+    }
+
+    public void setNama(String nama) {
+        this.nama = nama;
+    }
+
     public String getPhotoUrl() {
         return photoUrl;
     }
@@ -47,12 +57,12 @@ public class User {
         this.photoUrl = photoUrl;
     }
 
-    public String getIdAdmin() {
-        return idAdmin;
+    public boolean isAdmin() {
+        return isAdmin;
     }
 
-    public void setIdAdmin(String idAdmin) {
-        this.idAdmin = idAdmin;
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public double getSaldo() {
