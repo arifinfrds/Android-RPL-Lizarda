@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,8 +33,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import com.lizarda.lizarda.model.Product;
+import com.lizarda.lizarda.model.User;
 
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
 import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
 
 
@@ -117,8 +120,7 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Product product = dataSnapshot.getValue(Product.class);
-                // updateUI
-                updateUI(product);
+                fetchUserNameWithProduct(product);
             }
 
             @Override
@@ -129,9 +131,27 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-    private void updateUI(Product product) {
+    private void fetchUserNameWithProduct(final Product product) {
+        final String[] id = {""};
+        mDatabaseRef.child(CHILD_USER).child(product.getOwnerId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    User user = dataSnapshot.getValue(User.class);
+                    updateUI(product, user.getEmail());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void updateUI(Product product, String email) {
         mToolbarLayout.setTitle(product.getName());
-        mTvOwnerProduk.setText("Owner dengan ID " + product.getOwnerId());
+        mTvOwnerProduk.setText(email);
         mTvNamaProduk.setText(product.getName());
         mTvJenisProduk.setText(product.getCategory());
         mTvDeskripsiProduk.setText(product.getDescription());
