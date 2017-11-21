@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,17 +20,23 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Product;
+import com.lizarda.lizarda.model.User;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
 import static com.lizarda.lizarda.Const.NOT_SET;
 
 public class AddProductActivity extends AppCompatActivity implements View.OnClickListener {
@@ -76,9 +83,8 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         ButterKnife.bind(this);
 
         mBtnInputProduct.setOnClickListener(this);
-
         setupFirebase();
-
+        // userIdFromDatabase();
 
 //        mEtNamaProduct.setFocusable(false);
 //        mEtJenisProduct.setFocusable(false);
@@ -101,6 +107,9 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+
+
+
     private void writeToNodeProduct() {
         String hargaStr = mEtHargaProduct.getText().toString();
         double harga = Double.parseDouble(hargaStr);
@@ -113,19 +122,24 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                 NOT_SET,
                 false,
                 harga,
-                mEtJenisProduct.getText().toString()
+                mEtJenisProduct.getText().toString(),
+                ""
         );
         mDatabaseRef.child(CHILD_PRODUCT).child(productId).setValue(product)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(AddProductActivity.this, "Sukses Tambah Produk Anda.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(
+                                AddProductActivity.this,
+                                "Sukses Tambah Produk Anda.", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(AddProductActivity.this, "Terjadi kesalahan. Gagal tambah product Anda.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(
+                                AddProductActivity.this,
+                                "Terjadi kesalahan. Gagal tambah product Anda.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -162,6 +176,32 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         return super.onOptionsItemSelected(item);
     }
 
+    // MARK: - untuk generate database only! =======================================================
+    private ArrayList<String> mUsersId = new ArrayList<>();
+
+    private void userIdFromDatabase() {
+
+        mDatabaseRef.child(CHILD_USER).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Log.e("Count", "" + dataSnapshot.getChildrenCount());
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        User user = userSnapshot.getValue(User.class);
+                        mUsersId.add(user.getId());
+                        Log.d("Count", "onDataChange: " + user.getId());
+                    }
+                    writeManyProduct();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void writeManyProduct() {
 
         String[] names = {
@@ -187,6 +227,7 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
             double harga = rn.nextInt(5000000 - 200000 + 1) + 200000;
 
             int index = rn.nextInt(2 - 0) + 0;
+            int indexUid = rn.nextInt(3 - 0) + 0;
 
             String productId = mDatabaseRef.push().getKey();
             Product product = new Product(
@@ -196,7 +237,8 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                     NOT_SET,
                     false,
                     harga,
-                    categories[index]
+                    categories[index],
+                    mUsersId.get(indexUid)
             );
 
             mDatabaseRef.child(CHILD_PRODUCT).child(productId).setValue(product)
