@@ -21,6 +21,8 @@ import com.lizarda.lizarda.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
+
 /**
  * Created by arifinfrds on 10/31/17.
  */
@@ -45,7 +47,7 @@ public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        Product product = mProducts.get(position);
+        final Product product = mProducts.get(position);
 
         holder.mTvTitle.setText(product.getName());
         holder.mTvHarga.setText("Rp. " + product.getPrice());
@@ -53,14 +55,15 @@ public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.
         holder.mContainerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToDetailProdukActivity();
+                navigateToDetailProdukActivity(product.getId());
             }
         });
     }
 
 
-    private void navigateToDetailProdukActivity() {
+    private void navigateToDetailProdukActivity(String productId) {
         Intent intent = new Intent(mContext, DetailProdukActivity.class);
+        intent.putExtra(KEY_PRODUCT_ID, productId);
         mContext.startActivity(intent);
     }
 
