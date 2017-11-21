@@ -11,7 +11,9 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import android.content.Intent;
+import android.widget.TextView;
 
+import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
 import com.lizarda.lizarda.model.Model;
 import com.lizarda.lizarda.R;
@@ -25,11 +27,11 @@ import butterknife.ButterKnife;
 
 public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.ViewHolder> {
 
-    private ArrayList<Model> mModels;
+    private ArrayList<Product> mProducts;
     private Context mContext;
 
-    public HomeSuggestAdapter(ArrayList<Model> models, Context context) {
-        mModels = models;
+    public HomeSuggestAdapter(ArrayList<Product> products, Context context) {
+        mProducts = products;
         mContext = context;
     }
 
@@ -43,13 +45,15 @@ public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        Product product = mProducts.get(position);
 
-
+        holder.mTvTitle.setText(product.getName());
+        holder.mTvHarga.setText("Rp. " + product.getPrice());
 
         holder.mContainerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 navigateToDetailProdukActivity();
+                navigateToDetailProdukActivity();
             }
         });
     }
@@ -62,15 +66,21 @@ public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.
 
     @Override
     public int getItemCount() {
-        return mModels.size();
+        return mProducts.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public View mView;
 
+        public View mView;
 
         @BindView(R.id.iv_item_home)
         ImageView mIvThumbnail;
+
+        @BindView(R.id.tv_title)
+        TextView mTvTitle;
+
+        @BindView(R.id.tv_harga)
+        TextView mTvHarga;
 
         @BindView(R.id.frameLayout_item_suggest_container)
         FrameLayout mContainerLayout;
@@ -78,9 +88,7 @@ public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.
         public ViewHolder(View view) {
             super(view);
             mView = view;
-             ButterKnife.bind(this, view);
-//            mIvDivisi = (ImageView) view.findViewById(R.id.iv_divisi_jadwal);
-//            mTvNamaDivisi = (TextView) view.findViewById(R.id.tv_nama_divisi_jadwal);
+            ButterKnife.bind(this, view);
         }
     }
 
