@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.PopupMenu;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -82,20 +83,24 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
 
         ButterKnife.bind(this);
 
+        mBtnBrowse.setOnClickListener(this);
         mBtnInputProduct.setOnClickListener(this);
+
         setupFirebase();
         // userIdFromDatabase();
 
-//        mEtNamaProduct.setFocusable(false);
-//        mEtJenisProduct.setFocusable(false);
-//        mEtDescriptionProduct.setFocusable(false);
-//        mEtHargaProduct.setFocusable(false);
+        mEtNamaProduct.setFocusable(false);
+        mEtJenisProduct.setFocusable(false);
+        mEtDescriptionProduct.setFocusable(false);
+        mEtHargaProduct.setFocusable(false);
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_browse_add_product:
+                showPopupMenuPhoto();
                 break;
             case R.id.btn_input_add_product:
                 if (isInputEmpty()) {
@@ -107,7 +112,23 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    private void showPopupMenuPhoto() {
+        PopupMenu popup = new PopupMenu(AddProductActivity.this, mBtnBrowse);
+        //Inflating the Popup using xml file
+        popup.getMenuInflater().inflate(R.menu.image_popup_menu, popup.getMenu());
 
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                Toast.makeText(
+                        AddProductActivity.this,
+                        "You Clicked : " + item.getTitle(),
+                        Toast.LENGTH_SHORT
+                ).show();
+                return true;
+            }
+        });
+        popup.show();
+    }
 
 
     private void writeToNodeProduct() {
@@ -150,7 +171,8 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         String description = mEtDescriptionProduct.getText().toString();
         String hargaStr = mEtHargaProduct.getText().toString();
 
-        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(jenis) || TextUtils.isEmpty(description) || TextUtils.isEmpty(hargaStr)) {
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(jenis) || TextUtils.isEmpty(description)
+                || TextUtils.isEmpty(hargaStr)) {
             return true;
         } else {
             return false;
