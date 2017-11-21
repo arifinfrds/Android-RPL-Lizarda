@@ -39,11 +39,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ProductAdapter.ViewHolder holder, int position) {
+        final Product product = mProducts.get(position);
+
+        holder.mTvTitle.setText(product.getName());
+        holder.mTvContent.setText("Rp. " + product.getPrice());
 
         holder.mContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.onItemClick();
+                mCallback.onItemClick(product.getId());
             }
         });
     }
@@ -54,24 +58,27 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
         public View mView;
 
         @BindView(R.id.container_list_item)
         FrameLayout mContainer;
 
-        public ImageView mIvThumbnail;
-        public TextView mTvTitle;
-        public TextView mTvDetail;
+        @BindView(R.id.iv_thumbnail_detail_category)
+        ImageView mIvThumbnail;
+
+        @BindView(R.id.tv_title)
+        TextView mTvTitle;
+
+        @BindView(R.id.tv_content)
+        TextView mTvContent;
+
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
 
             ButterKnife.bind(this, view);
-//
-//            mIvThumbnail = view.findViewById(R.id.iv_thumbnail_detail_category);
-//            mTvTitle = view.findViewById(R.id.tv_title);
-//            mTvDetail = view.findViewById(R.id.tv_description_detail);
 
         }
     }

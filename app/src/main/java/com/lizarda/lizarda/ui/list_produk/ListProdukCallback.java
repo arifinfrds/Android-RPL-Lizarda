@@ -6,5 +6,5 @@ package com.lizarda.lizarda.ui.list_produk;
 
 public interface ListProdukCallback {
 
-    void onItemClick();
+    void onItemClick(String productId);
 }

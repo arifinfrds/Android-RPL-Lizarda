@@ -9,6 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
@@ -19,6 +26,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.lizarda.lizarda.Const.BUTTON_ID_KEY;
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
+import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
 
 public class ProductListActivity extends AppCompatActivity implements ListProdukCallback {
 
@@ -33,6 +42,11 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
 
     private ActionBar mActionBar;
 
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mDatabaseRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,11 +59,12 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
             mActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        setupFirebase();
+
         changeToolbarTitle();
 
         ButterKnife.bind(this);
         prepareData();
-        setupRecyclerView();
     }
 
     private void changeToolbarTitle() {
@@ -60,25 +75,49 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
             if (mButtonMoreId == R.id.btn_more_suggest_home) {
                 mActionBar.setTitle("Suggest");
                 // fetch suggest ...
+                fetchProduct();
             }
             if (mButtonMoreId == R.id.btn_more_popular_home) {
                 mActionBar.setTitle("Popular");
                 // fetch popular ...
+                fetchProduct();
             }
             if (mButtonMoreId == R.id.btn_more_new_listing_home) {
                 mActionBar.setTitle("New Listing");
                 // fetch new listing ...
+                fetchProduct();
             }
         }
     }
 
-    @Override
-    public void onItemClick() {
-        navigateToDetailProdukActivity();
+    private void fetchProduct() {
+        mDatabaseRef.child(CHILD_PRODUCT).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+                    Product product = productDataSnapshot.getValue(Product.class);
+                    mProducts.add(product);
+                }
+                // updateUI
+                setupRecyclerView();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
-    private void navigateToDetailProdukActivity() {
+
+    @Override
+    public void onItemClick(String productId) {
+        navigateToDetailProdukActivity(productId);
+    }
+
+    private void navigateToDetailProdukActivity(String productId) {
         Intent intent = new Intent(this, DetailProdukActivity.class);
+        intent.putExtra(KEY_PRODUCT_ID, productId);
         startActivity(intent);
     }
 
@@ -87,6 +126,14 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         );
         mRvDetailKategori.setAdapter(new ProductAdapter(mProducts, this));
+    }
+
+
+    private void setupFirebase() {
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+        mDatabase = FirebaseDatabase.getInstance();
+        mDatabaseRef = mDatabase.getReference();
     }
 
     private void prepareData() {
