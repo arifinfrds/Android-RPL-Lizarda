@@ -13,5 +13,7 @@ public interface Const {
     interface FIREBASE {
 
         String CHILD_USER = "User";
+
+        String CHILD_PRODUCT = "Product";
     }
 }

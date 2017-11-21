@@ -91,20 +91,20 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
 
     private void prepareData() {
         mProducts = new ArrayList<>();
-        mProducts.add(new Product("0", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
-        mProducts.add(new Product("1", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
-        mProducts.add(new Product("2", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
-        mProducts.add(new Product("3", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
-        mProducts.add(new Product("4", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
-        mProducts.add(new Product("5", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
-        mProducts.add(new Product("6", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
-        mProducts.add(new Product("7", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
-        mProducts.add(new Product("8", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
-        mProducts.add(new Product("9", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
-        mProducts.add(new Product("10", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
-        mProducts.add(new Product("11", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
-        mProducts.add(new Product("12", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
-        mProducts.add(new Product("13", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
+//        mProducts.add(new Product("0", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000, "ular"));
+//        mProducts.add(new Product("1", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
+//        mProducts.add(new Product("2", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
+//        mProducts.add(new Product("3", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
+//        mProducts.add(new Product("4", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
+//        mProducts.add(new Product("5", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
+//        mProducts.add(new Product("6", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
+//        mProducts.add(new Product("7", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
+//        mProducts.add(new Product("8", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
+//        mProducts.add(new Product("9", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
+//        mProducts.add(new Product("10", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
+//        mProducts.add(new Product("11", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
+//        mProducts.add(new Product("12", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
+//        mProducts.add(new Product("13", "Ular", "Ular hijau", "http:/www.google.com", false, 80.000));
     }
 
     @Override
