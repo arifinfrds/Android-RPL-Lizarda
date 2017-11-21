@@ -14,10 +14,13 @@ public class Product {
     private double price;
     private String category;
 
+    private String ownerId;
+
     public Product() {
     }
 
-    public Product(String id, String name, String description, String photoUrl, boolean isSold, double price, String category) {
+    public Product(String id, String name, String description, String photoUrl, boolean isSold,
+                   double price, String category, String ownerId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -25,6 +28,7 @@ public class Product {
         this.isSold = isSold;
         this.price = price;
         this.category = category;
+        this.ownerId = ownerId;
     }
 
     public String getId() {
@@ -81,5 +85,13 @@ public class Product {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 }
