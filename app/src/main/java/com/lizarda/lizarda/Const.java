@@ -14,6 +14,11 @@ public interface Const {
 
     String KEY_KATEGORI = "KEY_KATEGORI";
 
+    interface TAG {
+        String URI = "TAG_URI";
+        String SPINNER_KATEGORI = "SPINNER_KATEGORI";
+    }
+
     interface FIREBASE {
 
         String CHILD_USER = "User";

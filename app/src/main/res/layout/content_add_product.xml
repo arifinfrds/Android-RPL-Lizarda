@@ -8,13 +8,11 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.lizarda.lizarda.ui.AddProductActivity"
     tools:showIn="@layout/activity_add_product">
-    
+
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,8 +33,9 @@
                     android:id="@+id/iv_product_add_product"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/common_google_signin_btn_icon_light_focused" />
+                    android:layout_margin="@dimen/fab_margin"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/no_image" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -60,14 +59,14 @@
                         android:hint="Name"
                         android:inputType="textPersonName" />
 
-                    <EditText
-                        android:id="@+id/et_jenis_add_product"
+                    <android.support.v7.widget.AppCompatSpinner
+                        android:id="@+id/spinner_jenis_add_product"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:layout_marginTop="8dp"
                         android:ems="10"
-                        android:hint="Jenis"
-                        android:inputType="textPersonName" />
+                        android:entries="@array/item_spinner_jenis_produk"
+                        android:spinnerMode="dialog" />
 
 
                     <EditText
@@ -87,6 +86,10 @@
                         android:ems="10"
                         android:hint="Harga"
                         android:inputType="numberDecimal" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp" />
 
                 </LinearLayout>
 

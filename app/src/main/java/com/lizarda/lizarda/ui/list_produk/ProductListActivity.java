@@ -76,6 +76,7 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
 
             if (kategori != null) {
                 fetchProduct(kategori);
+                mActionBar.setTitle(kategori);
             } else {
                 if (mButtonMoreId == R.id.btn_more_suggest_home) {
                     mActionBar.setTitle("Suggest");
