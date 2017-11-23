@@ -16,6 +16,7 @@ public interface Const {
 
     interface TAG {
         String URI = "TAG_URI";
+        String SPINNER_KATEGORI = "SPINNER_KATEGORI";
     }
 
     interface FIREBASE {

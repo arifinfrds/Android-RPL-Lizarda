@@ -65,4 +65,11 @@
     <string name="action_share">Share</string>
     <string name="title_activity_detail_category_list">List</string>
     <string name="title_activity_add_product">Add Product</string>
+
+    <string-array name="item_spinner_jenis_produk">
+        <item>Bunglon</item>
+        <item>Ular</item>
+        <item>Iguana</item>
+        <item>Kura-kura</item>
+    </string-array>
 </resources>

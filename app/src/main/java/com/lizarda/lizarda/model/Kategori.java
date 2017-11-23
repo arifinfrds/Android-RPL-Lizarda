@@ -31,6 +31,7 @@ public class Kategori {
         categories.add(new Kategori(R.drawable.ic_kategori_chameleon, "Bunglon"));
         categories.add(new Kategori(R.drawable.ic_kategori_snake, "Ular"));
         categories.add(new Kategori(R.drawable.ic_kategori_iguana, "Iguana"));
+        categories.add(new Kategori(R.drawable.kategori_kura_kura, "Kura-kura"));
         return categories;
     }
 }
