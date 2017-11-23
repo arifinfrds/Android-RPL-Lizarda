@@ -1,5 +1,7 @@
 package com.lizarda.lizarda.ui;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +28,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.lizarda.lizarda.Const;
 import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.model.User;
@@ -39,6 +44,7 @@ import butterknife.ButterKnife;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
 import static com.lizarda.lizarda.Const.NOT_SET;
+import static com.lizarda.lizarda.Const.TAG.URI;
 
 public class AddProductActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -68,6 +74,11 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDatabaseRef;
 
+    private StorageReference mStorageRef;
+
+
+    public static final int PICK_IMAGE_REQUEST = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,9 +104,9 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         mEtJenisProduct.setFocusable(false);
         mEtDescriptionProduct.setFocusable(false);
         mEtHargaProduct.setFocusable(false);
-
     }
 
+    // MARK: - Views
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -112,6 +123,16 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void showPopupMenuPhoto() {
         PopupMenu popup = new PopupMenu(AddProductActivity.this, mBtnBrowse);
         //Inflating the Popup using xml file
@@ -124,13 +145,41 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                         "You Clicked : " + item.getTitle(),
                         Toast.LENGTH_SHORT
                 ).show();
+
+                int id = item.getItemId();
+                if (id == R.id.popup_open_gallery) {
+                    presentImagePicker();
+                }
+                if (id == R.id.popup_open_camera) {
+
+                }
                 return true;
             }
         });
         popup.show();
     }
 
+    private void presentImagePicker() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri uri = data.getData();
+            Log.d(URI, "onActivityResult: uri.toString() : " + uri.toString());
+            Log.d(URI, "onActivityResult: uri.getPath() : " + uri.getPath());
+            // TODO: 11/23/17  nanti file path di pake di firebase storage
+            // ...
+        }
+    }
+
+    // MARK: - Model & Logic
     private void writeToNodeProduct() {
         String hargaStr = mEtHargaProduct.getText().toString();
         double harga = Double.parseDouble(hargaStr);
@@ -184,19 +233,9 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         mUser = mAuth.getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseRef = mDatabase.getReference();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     // MARK: - untuk generate database only! =======================================================
     private ArrayList<String> mUsersId = new ArrayList<>();

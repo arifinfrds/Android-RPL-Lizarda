@@ -14,6 +14,10 @@ public interface Const {
 
     String KEY_KATEGORI = "KEY_KATEGORI";
 
+    interface TAG {
+        String URI = "TAG_URI";
+    }
+
     interface FIREBASE {
 
         String CHILD_USER = "User";
