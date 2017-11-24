@@ -1,6 +1,7 @@
-package com.lizarda.lizarda.ui;
+package com.lizarda.lizarda.ui.add_product;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,11 +35,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.lizarda.lizarda.R;
+import com.lizarda.lizarda.Utils;
 import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.model.User;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -52,6 +56,7 @@ import butterknife.ButterKnife;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
 import static com.lizarda.lizarda.Const.NOT_SET;
+import static com.lizarda.lizarda.Const.TAG.DOWNLOAD_IMAGE;
 import static com.lizarda.lizarda.Const.TAG.SPINNER_KATEGORI;
 import static com.lizarda.lizarda.Const.TAG.URI;
 
@@ -88,6 +93,9 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
     public static final int REQUEST_PICK_IMAGE = 1;
     public static final int REQUEST_IMAGE_CAPTURE = 2;
     private String mCurrentPhotoPath;
+
+    private String mImageDownloadUrl;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +140,7 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.btn_input_add_product:
                 if (isInputEmpty()) {
-                    Toast.makeText(this, "Mohon cek input Anda.", Toast.LENGTH_SHORT).show();
+                    toast("Mohon cek input Anda.");
                 } else {
                     writeToNodeProduct();
                 }
@@ -183,6 +191,45 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    // deprecated
+    private void uploadImageToFirebaseStorage(Uri fileUri) {
+        StorageReference imagesRef = mStorageRef.child("images/" + fileUri.getLastPathSegment());
+        UploadTask uploadTask = mStorageRef.putFile(fileUri);
+        uploadTask = imagesRef.putFile(fileUri);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                Log.d(DOWNLOAD_IMAGE, "onSuccess: downloadUrl + " + downloadUrl);
+            }
+        });
+    }
+
+    private void uploadImageToFirebaseStorage(byte[] data, Uri fileUri) {
+        StorageReference imagesRef = mStorageRef.child("images/" + fileUri.getLastPathSegment());
+        UploadTask uploadTask = imagesRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                mImageDownloadUrl = downloadUrl.toString();
+
+            }
+        });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -194,9 +241,26 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
 
             // update UI
             Picasso.with(this).load(uri).into(mIvProduct);
+            try {
+                File productImageFile = createImageFile();
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap;
+                if (data.getData() == null) {
+                    imageBitmap = (Bitmap) data.getExtras().get("data");
+                } else {
+                    imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                }
+                int nh = (int) (imageBitmap.getHeight() * (512.0 / imageBitmap.getWidth()));
+                Bitmap scaledImageBitmap = Bitmap.createScaledBitmap(imageBitmap, 512, nh, false);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                scaledImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                Bitmap.createScaledBitmap(scaledImageBitmap, mIvProduct.getWidth(), mIvProduct.getHeight(), false);
+                byte[] baosByte = baos.toByteArray();
+                uploadImageToFirebaseStorage(baosByte, Uri.fromFile(productImageFile));
 
-            // TODO: 11/23/17  nanti file path di pake di firebase storage
-            // ...
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -204,34 +268,56 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
             // update UI
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mIvProduct.setImageBitmap(imageBitmap);
-            try {
-                File productImageFile = createImageFile();
-                Uri productImageUri = Uri.fromFile(productImageFile);
-                Picasso.with(this).load(productImageUri).resize(300, 300).into(mIvProduct);
 
-                Log.d(URI, "onActivityResult: productImageUri.toString() : " + productImageUri.toString());
-                Log.d(URI, "onActivityResult: productImageUri.getPath() : " + productImageUri.getPath());
-                Log.d(URI, "onActivityResult: mCurrentPhotoPath : " + mCurrentPhotoPath);
-                // sudah berhasil dapetin absolutPath
-            } catch (IOException e) {
-                e.printStackTrace();
+            Log.d(URI, "onActivityResult: data : " + data);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] baosByte = baos.toByteArray();
+
+            Uri uri;
+            Cursor cursor = getContentResolver().query(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    new String[]{
+                            MediaStore.Images.Media.DATA,
+                            MediaStore.Images.Media.DATE_ADDED,
+                            MediaStore.Images.ImageColumns.ORIENTATION
+                    },
+                    MediaStore.Images.Media.DATE_ADDED,
+                    null,
+                    "date_added ASC"
+            );
+            // set image URI
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    uri = Uri.parse(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+                } while (cursor.moveToNext());
+                cursor.close();
+                try {
+                    File imageFile = createImageFile();
+                    uploadImageToFirebaseStorage(baosByte, Uri.fromFile(imageFile));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-
         }
+    }
+
+    private void toast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     // MARK: - Model & Logic
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = mUser.getUid() + "_JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
@@ -246,27 +332,23 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                 productId,
                 mEtNamaProduct.getText().toString(),
                 mEtDescriptionProduct.getText().toString(),
-                NOT_SET,
+                mImageDownloadUrl,
                 false,
                 harga,
                 mSpinnerJenisProduct.getSelectedItem().toString(),
-                ""
+                mUser.getUid()
         );
         mDatabaseRef.child(CHILD_PRODUCT).child(productId).setValue(product)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(
-                                AddProductActivity.this,
-                                "Sukses Tambah Produk Anda.", Toast.LENGTH_SHORT).show();
+                        toast("Sukses tambah produk Anda.");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(
-                                AddProductActivity.this,
-                                "Terjadi kesalahan. Gagal tambah product Anda.", Toast.LENGTH_SHORT).show();
+                        toast("Terjadi kesalahan. Gagal tambah produk Anda.");
                     }
                 });
     }

@@ -7,11 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.lizarda.lizarda.R;
-import com.lizarda.lizarda.ui.AddProductActivity;
-import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
+import com.lizarda.lizarda.ui.add_product.AddProductActivity;
 
 
 public class ProfileActivity extends AppCompatActivity {
