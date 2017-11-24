@@ -1,5 +1,6 @@
 package com.lizarda.lizarda.ui.add_product;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -96,6 +97,8 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
 
     private String mImageDownloadUrl;
 
+    private ProgressDialog mProgressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +145,9 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                 if (isInputEmpty()) {
                     toast("Mohon cek input Anda.");
                 } else {
+                    showProgressDialog();
                     writeToNodeProduct();
+                    hideProgressDialog();
                 }
                 break;
         }
@@ -225,7 +230,6 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 mImageDownloadUrl = downloadUrl.toString();
-
             }
         });
     }
@@ -307,6 +311,21 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.uploading));
+            mProgressDialog.setIndeterminate(true);
+        }
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
     // MARK: - Model & Logic
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -343,6 +362,7 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public void onSuccess(Void aVoid) {
                         toast("Sukses tambah produk Anda.");
+                        finish();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
