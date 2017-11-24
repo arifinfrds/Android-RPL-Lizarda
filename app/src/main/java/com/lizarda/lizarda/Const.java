@@ -17,6 +17,8 @@ public interface Const {
     interface TAG {
         String URI = "TAG_URI";
         String SPINNER_KATEGORI = "SPINNER_KATEGORI";
+
+        String DOWNLOAD_IMAGE = "DOWNLOAD_IMAGE";
     }
 
     interface FIREBASE {
@@ -24,5 +26,7 @@ public interface Const {
         String CHILD_USER = "User";
 
         String CHILD_PRODUCT = "Product";
+
+        String CHILD_IMAGES = "images";
     }
 }
