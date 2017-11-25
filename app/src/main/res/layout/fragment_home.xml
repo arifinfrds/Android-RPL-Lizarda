@@ -72,7 +72,7 @@
                         android:layout_height="match_parent">
 
                         <TextView
-                            android:id="@+id/textView10"
+                            android:id="@+id/tv_section_suggest_home"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
@@ -109,7 +109,7 @@
                             android:indeterminate="true"
                             android:visibility="visible"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/textView10"
+                            app:layout_constraintStart_toEndOf="@+id/tv_section_suggest_home"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:visibility="visible" />
 
@@ -147,7 +147,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/textView3"
+                            android:id="@+id/tv_section_popular_home"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
@@ -184,7 +184,7 @@
                             android:indeterminate="true"
                             android:visibility="visible"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/textView3"
+                            app:layout_constraintStart_toEndOf="@+id/tv_section_popular_home"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:visibility="visible" />
                     </android.support.constraint.ConstraintLayout>
@@ -220,7 +220,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/textView5"
+                            android:id="@+id/tv_section_new_listing_home"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
@@ -256,7 +256,7 @@
                             android:indeterminate="true"
                             android:visibility="visible"
                             app:layout_constraintBottom_toTopOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/textView5"
+                            app:layout_constraintStart_toEndOf="@+id/tv_section_new_listing_home"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:visibility="visible" />
 
