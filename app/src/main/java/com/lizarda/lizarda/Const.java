@@ -27,10 +27,15 @@ public interface Const {
 
         String CHILD_PRODUCT = "Product";
 
+        String CHILD_POPULARITY_COUNT = "popularityCount";
+
         String CHILD_IMAGES = "images";
+
 
         int LIMIT_SUGGEST = 10;
 
         int LIMIT_NEW_LISTING = 10;
+
+        int PRODUCT_DEFAULT_POPULARITY_COUNT = 0;
     }
 }

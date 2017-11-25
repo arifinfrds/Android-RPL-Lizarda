@@ -38,7 +38,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.lizarda.lizarda.R;
-import com.lizarda.lizarda.Utils;
 import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.model.User;
 import com.squareup.picasso.Picasso;
@@ -56,6 +55,7 @@ import butterknife.ButterKnife;
 
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
+import static com.lizarda.lizarda.Const.FIREBASE.PRODUCT_DEFAULT_POPULARITY_COUNT;
 import static com.lizarda.lizarda.Const.NOT_SET;
 import static com.lizarda.lizarda.Const.TAG.DOWNLOAD_IMAGE;
 import static com.lizarda.lizarda.Const.TAG.SPINNER_KATEGORI;
@@ -132,6 +132,8 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
             }
         });
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+
     }
 
     // MARK: - Views
@@ -355,7 +357,8 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                 false,
                 harga,
                 mSpinnerJenisProduct.getSelectedItem().toString(),
-                mUser.getUid()
+                mUser.getUid(),
+                PRODUCT_DEFAULT_POPULARITY_COUNT
         );
         mDatabaseRef.child(CHILD_PRODUCT).child(productId).setValue(product)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -458,7 +461,8 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                     false,
                     harga,
                     categories[index],
-                    mUsersId.get(indexUid)
+                    mUsersId.get(indexUid),
+                    PRODUCT_DEFAULT_POPULARITY_COUNT
             );
 
             mDatabaseRef.child(CHILD_PRODUCT).child(productId).setValue(product)

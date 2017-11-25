@@ -15,12 +15,13 @@ public class Product {
     private String category;
 
     private String ownerId;
+    private int popularityCount;
 
     public Product() {
     }
 
     public Product(String id, String name, String description, String photoUrl, boolean isSold,
-                   double price, String category, String ownerId) {
+                   double price, String category, String ownerId, int popularityCount) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -29,6 +30,7 @@ public class Product {
         this.price = price;
         this.category = category;
         this.ownerId = ownerId;
+        this.popularityCount = popularityCount;
     }
 
     public String getId() {
@@ -93,5 +95,13 @@ public class Product {
 
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public int getPopularityCount() {
+        return popularityCount;
+    }
+
+    public void setPopularityCount(int popularityCount) {
+        this.popularityCount = popularityCount;
     }
 }
