@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -87,6 +89,15 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
     @BindView(R.id.progress_bar_new_listing_home)
     ProgressBar mProgressBarNewListing;
 
+    @BindView(R.id.tv_section_suggest_home)
+    TextView mTvSectionSuggest;
+
+    @BindView(R.id.tv_section_popular_home)
+    TextView mTvSectionPopular;
+
+    @BindView(R.id.tv_section_new_listing_home)
+    TextView mTvSectionNewListing;
+
 
     private HomeKategoriAdapter mHomeKategoriAdapter;
     private HomeSuggestAdapter mHomeSuggestAdapter;
@@ -145,14 +156,24 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
 
         setupFirebase();
 
-        fetchSuggest();
-        fetchPopular();
-        fetchNewListing();
 
         mHomeKategoriAdapter = new HomeKategoriAdapter(Kategori.getCategories(), this, getContext());
         setupRecyclerView(mRvKategori);
 
         // updateChildValuesProduct();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mTvSectionSuggest.setText("Suggest");
+        mTvSectionPopular.setText("Popular");
+        mTvSectionNewListing.setText("New Listing");
+
+        fetchSuggest();
+        fetchPopular();
+        fetchNewListing();
     }
 
     private ArrayList<Product> mModifiedProducts = new ArrayList<>();
@@ -191,13 +212,20 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
         mDatabaseRef.child(CHILD_PRODUCT).limitToFirst(LIMIT_SUGGEST).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
-                    Product product = productDataSnapshot.getValue(Product.class);
-                    mSuggestProducts.add(product);
+                if (!mSuggestProducts.isEmpty()) {
+                    mSuggestProducts.clear();
                 }
-                // updateUI
-                mProgressBarSuggest.setVisibility(View.GONE);
-                setupRecyclerView(mRvSuggest);
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+                        Product product = productDataSnapshot.getValue(Product.class);
+                        mSuggestProducts.add(product);
+                    }
+                    // updateUI
+                    mProgressBarSuggest.setVisibility(View.GONE);
+                    setupRecyclerView(mRvSuggest);
+                } else {
+                    mTvSectionSuggest.setText("Suggest - Tidak ada data");
+                }
             }
 
             @Override
@@ -211,14 +239,23 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
         mDatabaseRef.child(CHILD_PRODUCT).orderByChild(CHILD_POPULARITY_COUNT).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
-                    Product product = productDataSnapshot.getValue(Product.class);
-                    Log.d(TAG_POPULAR, "onDataChange: product.getPopularityCount(): " + product.getPopularityCount());
-                    mPopularProducts.add(product);
+                if (!mPopularProducts.isEmpty()) {
+                    mPopularProducts.clear();
                 }
-                // updateUI
-                mProgressBarPopular.setVisibility(View.GONE);
-                setupRecyclerView(mRvPopular);
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+                        Product product = productDataSnapshot.getValue(Product.class);
+                        Log.d(TAG_POPULAR, "onDataChange: product.getPopularityCount(): " + product.getPopularityCount());
+                        mPopularProducts.add(product);
+                    }
+                    // updateUI
+                    mProgressBarPopular.setVisibility(View.GONE);
+                    setupRecyclerView(mRvPopular);
+                } else {
+                    mTvSectionPopular.setText("Popular - Tidak ada data");
+                }
+
+
             }
 
             @Override
@@ -232,13 +269,20 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
         mDatabaseRef.child(CHILD_PRODUCT).limitToLast(LIMIT_NEW_LISTING).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
-                    Product product = productDataSnapshot.getValue(Product.class);
-                    mNewListingProducts.add(product);
+                if (!mNewListingProducts.isEmpty()) {
+                    mNewListingProducts.clear();
                 }
-                // updateUI
-                mProgressBarNewListing.setVisibility(View.GONE);
-                setupRecyclerView(mRvNewListing);
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+                        Product product = productDataSnapshot.getValue(Product.class);
+                        mNewListingProducts.add(product);
+                    }
+                    // updateUI
+                    mProgressBarNewListing.setVisibility(View.GONE);
+                    setupRecyclerView(mRvNewListing);
+                } else {
+                    mTvSectionNewListing.setText("New Listing - Tidak ada data");
+                }
             }
 
             @Override
@@ -247,8 +291,7 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
             }
         });
     }
-
-
+    
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

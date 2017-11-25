@@ -8,10 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,11 +34,13 @@ import butterknife.ButterKnife;
 
 import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.model.User;
+import com.squareup.picasso.Picasso;
 
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_POPULARITY_COUNT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
 import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
+import static com.lizarda.lizarda.Const.NOT_SET;
 
 
 public class DetailProdukActivity extends AppCompatActivity implements View.OnClickListener {
@@ -69,6 +71,9 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
 
     @BindView(R.id.tv_harga_detail_produk)
     TextView mTvHargaProduk;
+
+    @BindView(R.id.iv_produk_detail_produk)
+    ImageView mIvProduk;
 
     private CommentAdapter mCommentAdapter;
 
@@ -164,6 +169,10 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
         mTvJenisProduk.setText(product.getCategory());
         mTvDeskripsiProduk.setText(product.getDescription());
         mTvHargaProduk.setText("Rp. " + product.getPrice());
+
+        if (!product.getPhotoUrl().equalsIgnoreCase(NOT_SET)) {
+            Picasso.with(this).load(product.getPhotoUrl()).into(mIvProduk);
+        }
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
