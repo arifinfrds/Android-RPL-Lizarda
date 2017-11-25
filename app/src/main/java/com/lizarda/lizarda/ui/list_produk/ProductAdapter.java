@@ -1,5 +1,6 @@
 package com.lizarda.lizarda.ui.list_produk;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +11,14 @@ import android.widget.TextView;
 
 import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Product;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.lizarda.lizarda.Const.NOT_SET;
 
 /**
  * Created by arifinfrds on 11/20/17.
@@ -23,11 +27,13 @@ import butterknife.ButterKnife;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
     private ArrayList<Product> mProducts;
+    private Context mContext;
     private ListProdukCallback mCallback;
 
-    public ProductAdapter(ArrayList<Product> products, ListProdukCallback callback) {
-        this.mProducts = products;
-        this.mCallback = callback;
+    public ProductAdapter(ArrayList<Product> mProducts, Context mContext, ListProdukCallback mCallback) {
+        this.mProducts = mProducts;
+        this.mContext = mContext;
+        this.mCallback = mCallback;
     }
 
     @Override
@@ -43,6 +49,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
         holder.mTvTitle.setText(product.getName());
         holder.mTvContent.setText("Rp. " + product.getPrice());
+
+        if (product.getPhotoUrl().equalsIgnoreCase(NOT_SET)) {
+            Picasso.with(mContext).load(R.drawable.no_image).into(holder.mIvThumbnail);
+        } else {
+            Picasso.with(mContext).load(product.getPhotoUrl()).into(holder.mIvThumbnail);
+        }
 
         holder.mContainer.setOnClickListener(new View.OnClickListener() {
             @Override

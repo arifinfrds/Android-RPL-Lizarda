@@ -19,6 +19,8 @@ public interface Const {
         String SPINNER_KATEGORI = "SPINNER_KATEGORI";
 
         String DOWNLOAD_IMAGE = "DOWNLOAD_IMAGE";
+
+        String TAG_POPULAR = "TAG_POPULAR";
     }
 
     interface FIREBASE {
