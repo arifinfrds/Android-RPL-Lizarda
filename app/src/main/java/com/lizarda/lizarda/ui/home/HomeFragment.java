@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,12 +32,14 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_POPULARITY_COUNT;
 import static com.lizarda.lizarda.Const.FIREBASE.PRODUCT_DEFAULT_POPULARITY_COUNT;
 import static com.lizarda.lizarda.Const.KEY_BUTTON_ID;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_NEW_LISTING;
 import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_SUGGEST;
 import static com.lizarda.lizarda.Const.KEY_KATEGORI;
+import static com.lizarda.lizarda.Const.TAG.TAG_POPULAR;
 
 
 public class HomeFragment extends Fragment implements HomeKategoriCallback, View.OnClickListener {
@@ -143,10 +146,10 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
         setupFirebase();
 
         fetchSuggest();
+        fetchPopular();
         fetchNewListing();
 
         mHomeKategoriAdapter = new HomeKategoriAdapter(Kategori.getCategories(), this, getContext());
-
         setupRecyclerView(mRvKategori);
 
         // updateChildValuesProduct();
@@ -194,8 +197,27 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
                 }
                 // updateUI
                 mProgressBarSuggest.setVisibility(View.GONE);
-                mProgressBarPopular.setVisibility(View.GONE);
                 setupRecyclerView(mRvSuggest);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void fetchPopular() {
+        mDatabaseRef.child(CHILD_PRODUCT).orderByChild(CHILD_POPULARITY_COUNT).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+                    Product product = productDataSnapshot.getValue(Product.class);
+                    Log.d(TAG_POPULAR, "onDataChange: product.getPopularityCount(): " + product.getPopularityCount());
+                    mPopularProducts.add(product);
+                }
+                // updateUI
+                mProgressBarPopular.setVisibility(View.GONE);
                 setupRecyclerView(mRvPopular);
             }
 
@@ -278,16 +300,28 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
 
     private void setupRecyclerView(RecyclerView recyclerView) {
 
-        LinearLayoutManager horizontalLayout = new LinearLayoutManager(
+        LinearLayoutManager defaultHorizontalLayout = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.HORIZONTAL,
                 false
         );
 
-        recyclerView.setLayoutManager(horizontalLayout);
+        LinearLayoutManager reverseHorizontalLayout = new LinearLayoutManager(
+                getContext(),
+                LinearLayoutManager.HORIZONTAL,
+                true
+        );
+        reverseHorizontalLayout.setReverseLayout(true);
+        reverseHorizontalLayout.setStackFromEnd(true);
+
+        if (recyclerView.getId() == R.id.rv_popular_home) {
+            recyclerView.setLayoutManager(reverseHorizontalLayout);
+        } else {
+            recyclerView.setLayoutManager(defaultHorizontalLayout);
+        }
 
         mHomeSuggestAdapter = new HomeSuggestAdapter(mSuggestProducts, getContext());
-        mHomePopularAdapter = new HomePopularAdapter(mSuggestProducts, getContext());
+        mHomePopularAdapter = new HomePopularAdapter(mPopularProducts, getContext());
         mHomeNewListingAdapter = new HomeNewListingAdapter(mNewListingProducts, getContext());
 
         switch (recyclerView.getId()) {

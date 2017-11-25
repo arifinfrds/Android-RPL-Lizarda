@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,11 +26,13 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_POPULARITY_COUNT;
 import static com.lizarda.lizarda.Const.KEY_BUTTON_ID;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_NEW_LISTING;
 import static com.lizarda.lizarda.Const.KEY_KATEGORI;
 import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
+import static com.lizarda.lizarda.Const.TAG.TAG_POPULAR;
 
 public class ProductListActivity extends AppCompatActivity implements ListProdukCallback {
 
@@ -37,7 +40,7 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
     private ProductAdapter mAdapters;
 
     @BindView(R.id.rv_list_detail_kategori)
-    RecyclerView mRvDetailKategori;
+    RecyclerView mRecyclerView;
 
     private Bundle mExtras;
     private int mButtonMoreId;
@@ -88,7 +91,7 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 if (mButtonMoreId == R.id.btn_more_popular_home) {
                     mActionBar.setTitle("Popular");
                     // fetch popular ...
-                    fetchProduct();
+                    fetchPopular();
                 }
                 if (mButtonMoreId == R.id.btn_more_new_listing_home) {
                     mActionBar.setTitle("New Listing");
@@ -141,6 +144,26 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
         });
     }
 
+    private void fetchPopular() {
+        mDatabaseRef.child(CHILD_PRODUCT).orderByChild(CHILD_POPULARITY_COUNT).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+                    Product product = productDataSnapshot.getValue(Product.class);
+                    Log.d(TAG_POPULAR, "onDataChange: product.getPopularityCount(): " + product.getPopularityCount());
+                    mProducts.add(product);
+                }
+                // updateUI
+                setupRecyclerView();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void fetchNewListing() {
         mDatabaseRef.child(CHILD_PRODUCT).limitToLast(LIMIT_NEW_LISTING).addValueEventListener(new ValueEventListener() {
             @Override
@@ -173,16 +196,29 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
     }
 
     private void setupRecyclerView() {
-        mRvDetailKategori.setLayoutManager(
-                new LinearLayoutManager(
-                        this,
-                        LinearLayoutManager.VERTICAL,
-                        false
-                )
+
+        LinearLayoutManager defaultHorizontalLayout = new LinearLayoutManager(
+                this,
+                LinearLayoutManager.VERTICAL,
+                false
         );
-        mRvDetailKategori.setAdapter(
-                new ProductAdapter(mProducts, this)
+
+        LinearLayoutManager reverseHorizontalLayout = new LinearLayoutManager(
+                this,
+                LinearLayoutManager.VERTICAL,
+                true
         );
+        reverseHorizontalLayout.setReverseLayout(true);
+        reverseHorizontalLayout.setStackFromEnd(true);
+
+        if (mButtonMoreId == R.id.btn_more_popular_home) {
+            mRecyclerView.setLayoutManager(reverseHorizontalLayout);
+        } else {
+            mRecyclerView.setLayoutManager(defaultHorizontalLayout);
+        }
+
+        mAdapters = new ProductAdapter(mProducts, this, this);
+        mRecyclerView.setAdapter(mAdapters);
     }
 
 
