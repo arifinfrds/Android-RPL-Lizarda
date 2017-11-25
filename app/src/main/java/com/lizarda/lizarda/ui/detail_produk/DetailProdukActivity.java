@@ -35,6 +35,7 @@ import butterknife.ButterKnife;
 import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.model.User;
 
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_POPULARITY_COUNT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
 import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
@@ -80,6 +81,8 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDatabaseRef;
 
+    private Product mProduct;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,12 +118,14 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
         setupRecyclerView(mRvComment);
     }
 
+
     private void fetchProductWithId(final String productId) {
         mDatabaseRef.child(CHILD_PRODUCT).child(productId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Product product = dataSnapshot.getValue(Product.class);
                 fetchUserNameWithProduct(product);
+                mProduct = product;
             }
 
             @Override
@@ -128,7 +133,10 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
 
             }
         });
+    }
 
+    private void updatePopularityCountProductWithProductId(String productId, int newCount) {
+        mDatabaseRef.child(CHILD_PRODUCT).child(productId).child(CHILD_POPULARITY_COUNT).setValue(newCount);
     }
 
     private void fetchUserNameWithProduct(final Product product) {
@@ -217,6 +225,15 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        updatePopularityCountProductWithProductId(
+                mProduct.getId(),
+                mProduct.getPopularityCount() + 1
+        );
     }
 
     private void performShare() {

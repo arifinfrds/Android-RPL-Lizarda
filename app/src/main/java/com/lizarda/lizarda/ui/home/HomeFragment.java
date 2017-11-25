@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.lizarda.lizarda.Const.FIREBASE.PRODUCT_DEFAULT_POPULARITY_COUNT;
 import static com.lizarda.lizarda.Const.KEY_BUTTON_ID;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_NEW_LISTING;
@@ -147,6 +148,39 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
         mHomeKategoriAdapter = new HomeKategoriAdapter(Kategori.getCategories(), this, getContext());
 
         setupRecyclerView(mRvKategori);
+
+        // updateChildValuesProduct();
+    }
+
+    private ArrayList<Product> mModifiedProducts = new ArrayList<>();
+
+    private void updateChildValuesProduct() {
+        mDatabaseRef.child(CHILD_PRODUCT).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // fetch all product
+                for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+                    Product product = productDataSnapshot.getValue(Product.class);
+                    mModifiedProducts.add(product);
+                }
+
+                // update product values
+                for (Product product : mModifiedProducts) {
+                    product.setPopularityCount(PRODUCT_DEFAULT_POPULARITY_COUNT);
+                }
+
+                // mDatabaseRef.child(CHILD_PRODUCT).add
+                for (Product product : mModifiedProducts) {
+                    mDatabaseRef.child(CHILD_PRODUCT).child(product.getId())
+                            .child("popularityCount").setValue(product.getPopularityCount());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
