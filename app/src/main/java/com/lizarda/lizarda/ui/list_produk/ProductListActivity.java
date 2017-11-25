@@ -25,8 +25,9 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.lizarda.lizarda.Const.BUTTON_ID_KEY;
+import static com.lizarda.lizarda.Const.KEY_BUTTON_ID;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
+import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_NEW_LISTING;
 import static com.lizarda.lizarda.Const.KEY_KATEGORI;
 import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
 
@@ -71,12 +72,13 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
     private void changeToolbarTitle() {
         mExtras = getIntent().getExtras();
         if (mExtras != null) {
-            mButtonMoreId = mExtras.getInt(BUTTON_ID_KEY);
+            mButtonMoreId = mExtras.getInt(KEY_BUTTON_ID);
             String kategori = mExtras.getString(KEY_KATEGORI);
 
             if (kategori != null) {
                 fetchProduct(kategori);
                 mActionBar.setTitle(kategori);
+                // fetchNewListing();
             } else {
                 if (mButtonMoreId == R.id.btn_more_suggest_home) {
                     mActionBar.setTitle("Suggest");
@@ -91,11 +93,9 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 if (mButtonMoreId == R.id.btn_more_new_listing_home) {
                     mActionBar.setTitle("New Listing");
                     // fetch new listing ...
-                    fetchProduct();
+                    fetchNewListing();
                 }
             }
-
-
         }
     }
 
@@ -141,6 +141,25 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
         });
     }
 
+    private void fetchNewListing() {
+        mDatabaseRef.child(CHILD_PRODUCT).limitToLast(LIMIT_NEW_LISTING).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+                    Product product = productDataSnapshot.getValue(Product.class);
+                    mProducts.add(product);
+                }
+                // updateUI
+                setupRecyclerView();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     @Override
     public void onItemClick(String productId) {
@@ -155,9 +174,15 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
 
     private void setupRecyclerView() {
         mRvDetailKategori.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                new LinearLayoutManager(
+                        this,
+                        LinearLayoutManager.VERTICAL,
+                        false
+                )
         );
-        mRvDetailKategori.setAdapter(new ProductAdapter(mProducts, this));
+        mRvDetailKategori.setAdapter(
+                new ProductAdapter(mProducts, this)
+        );
     }
 
 

@@ -17,11 +17,13 @@ import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
 import com.lizarda.lizarda.model.Model;
 import com.lizarda.lizarda.R;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
+import static com.lizarda.lizarda.Const.NOT_SET;
 
 /**
  * Created by arifinfrds on 10/31/17.
@@ -52,6 +54,12 @@ public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.
         holder.mTvTitle.setText(product.getName());
         holder.mTvHarga.setText("Rp. " + product.getPrice());
 
+        if (product.getPhotoUrl().equalsIgnoreCase(NOT_SET)) {
+            Picasso.with(mContext).load(R.drawable.no_image).into(holder.mIvThumbnail);
+        } else {
+            Picasso.with(mContext).load(product.getPhotoUrl()).into(holder.mIvThumbnail);
+        }
+
         holder.mContainerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,6 +68,10 @@ public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.
         });
     }
 
+    @Override
+    public int getItemCount() {
+        return mProducts.size();
+    }
 
     private void navigateToDetailProdukActivity(String productId) {
         Intent intent = new Intent(mContext, DetailProdukActivity.class);
@@ -67,10 +79,6 @@ public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.
         mContext.startActivity(intent);
     }
 
-    @Override
-    public int getItemCount() {
-        return mProducts.size();
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

@@ -7,11 +7,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,12 +31,15 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.lizarda.lizarda.Const.BUTTON_ID_KEY;
+import static com.lizarda.lizarda.Const.KEY_BUTTON_ID;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
+import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_NEW_LISTING;
+import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_SUGGEST;
 import static com.lizarda.lizarda.Const.KEY_KATEGORI;
 
 
 public class HomeFragment extends Fragment implements HomeKategoriCallback, View.OnClickListener {
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -46,7 +49,9 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
 
     // MARK: - Properties
     private ArrayList<Model> mModels;
-    private ArrayList<Product> mProducts;
+    private ArrayList<Product> mSuggestProducts;
+    private ArrayList<Product> mPopularProducts;
+    private ArrayList<Product> mNewListingProducts;
 
     @BindView(R.id.rv_kategori_home)
     RecyclerView mRvKategori;
@@ -69,6 +74,16 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
     @BindView(R.id.btn_more_new_listing_home)
     Button mBtnMoreNewListing;
 
+    @BindView(R.id.progress_bar_suggest_home)
+    ProgressBar mProgressBarSuggest;
+
+    @BindView(R.id.progress_bar_popular_home)
+    ProgressBar mProgressBarPopular;
+
+    @BindView(R.id.progress_bar_new_listing_home)
+    ProgressBar mProgressBarNewListing;
+
+
     private HomeKategoriAdapter mHomeKategoriAdapter;
     private HomeSuggestAdapter mHomeSuggestAdapter;
     private HomePopularAdapter mHomePopularAdapter;
@@ -84,7 +99,6 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -93,7 +107,6 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
         fragment.setArguments(args);
         return fragment;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,7 +131,9 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
         super.onViewCreated(view, savedInstanceState);
 
         mModels = Model.generateModels();
-        mProducts = new ArrayList<>();
+        mSuggestProducts = new ArrayList<>();
+        mPopularProducts = new ArrayList<>();
+        mNewListingProducts = new ArrayList<>();
 
         mBtnMoreSuggest.setOnClickListener(this);
         mBtnMorePopular.setOnClickListener(this);
@@ -126,24 +141,47 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
 
         setupFirebase();
 
-        fetchProduct();
+        fetchSuggest();
+        fetchNewListing();
 
         mHomeKategoriAdapter = new HomeKategoriAdapter(Kategori.getCategories(), this, getContext());
 
         setupRecyclerView(mRvKategori);
     }
 
-    private void fetchProduct() {
-        mDatabaseRef.child(CHILD_PRODUCT).addValueEventListener(new ValueEventListener() {
+
+    private void fetchSuggest() {
+        mDatabaseRef.child(CHILD_PRODUCT).limitToFirst(LIMIT_SUGGEST).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
                     Product product = productDataSnapshot.getValue(Product.class);
-                    mProducts.add(product);
+                    mSuggestProducts.add(product);
                 }
                 // updateUI
+                mProgressBarSuggest.setVisibility(View.GONE);
+                mProgressBarPopular.setVisibility(View.GONE);
                 setupRecyclerView(mRvSuggest);
                 setupRecyclerView(mRvPopular);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void fetchNewListing() {
+        mDatabaseRef.child(CHILD_PRODUCT).limitToLast(LIMIT_NEW_LISTING).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+                    Product product = productDataSnapshot.getValue(Product.class);
+                    mNewListingProducts.add(product);
+                }
+                // updateUI
+                mProgressBarNewListing.setVisibility(View.GONE);
                 setupRecyclerView(mRvNewListing);
             }
 
@@ -182,13 +220,13 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
         Intent intent = new Intent(getContext(), ProductListActivity.class);
 
         if (fromButtonId == R.id.btn_more_suggest_home) {
-            intent.putExtra(BUTTON_ID_KEY, R.id.btn_more_suggest_home);
+            intent.putExtra(KEY_BUTTON_ID, R.id.btn_more_suggest_home);
 
         } else if (fromButtonId == R.id.btn_more_popular_home) {
-            intent.putExtra(BUTTON_ID_KEY, R.id.btn_more_popular_home);
+            intent.putExtra(KEY_BUTTON_ID, R.id.btn_more_popular_home);
 
         } else if (fromButtonId == R.id.btn_more_new_listing_home) {
-            intent.putExtra(BUTTON_ID_KEY, R.id.btn_more_popular_home);
+            intent.putExtra(KEY_BUTTON_ID, R.id.btn_more_new_listing_home);
         }
         startActivity(intent);
     }
@@ -212,24 +250,24 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
                 false
         );
 
-        mHomeSuggestAdapter = new HomeSuggestAdapter(mProducts, getContext());
+        recyclerView.setLayoutManager(horizontalLayout);
+
+        mHomeSuggestAdapter = new HomeSuggestAdapter(mSuggestProducts, getContext());
+        mHomePopularAdapter = new HomePopularAdapter(mSuggestProducts, getContext());
+        mHomeNewListingAdapter = new HomeNewListingAdapter(mNewListingProducts, getContext());
 
         switch (recyclerView.getId()) {
             case R.id.rv_kategori_home:
                 recyclerView.setAdapter(mHomeKategoriAdapter);
-                recyclerView.setLayoutManager(horizontalLayout);
                 break;
             case R.id.rv_suggest_home:
                 recyclerView.setAdapter(mHomeSuggestAdapter);
-                recyclerView.setLayoutManager(horizontalLayout);
                 break;
             case R.id.rv_popular_home:
-                recyclerView.setAdapter(mHomeSuggestAdapter);
-                recyclerView.setLayoutManager(horizontalLayout);
+                recyclerView.setAdapter(mHomePopularAdapter);
                 break;
             case R.id.rv_new_listing_home:
-                recyclerView.setAdapter(mHomeSuggestAdapter);
-                recyclerView.setLayoutManager(horizontalLayout);
+                recyclerView.setAdapter(mHomeNewListingAdapter);
                 break;
         }
 
