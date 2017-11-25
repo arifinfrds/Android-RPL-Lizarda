@@ -6,7 +6,7 @@ package com.lizarda.lizarda;
 
 public interface Const {
 
-    String BUTTON_ID_KEY = "BUTTON_ID_KEY";
+    String KEY_BUTTON_ID = "KEY_BUTTON_ID";
 
     String NOT_SET = "not set";
 
@@ -28,5 +28,9 @@ public interface Const {
         String CHILD_PRODUCT = "Product";
 
         String CHILD_IMAGES = "images";
+
+        int LIMIT_SUGGEST = 10;
+
+        int LIMIT_NEW_LISTING = 10;
     }
 }
