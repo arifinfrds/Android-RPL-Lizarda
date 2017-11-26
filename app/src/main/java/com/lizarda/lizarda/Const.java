@@ -14,6 +14,9 @@ public interface Const {
 
     String KEY_KATEGORI = "KEY_KATEGORI";
 
+    String KEY_ARRAY_LIST_PRODUCT_ID = "KEY_ARRAY_LIST_PRODUCT_ID";
+
+
     interface TAG {
         String URI = "TAG_URI";
         String SPINNER_KATEGORI = "SPINNER_KATEGORI";
@@ -21,6 +24,8 @@ public interface Const {
         String DOWNLOAD_IMAGE = "DOWNLOAD_IMAGE";
 
         String TAG_POPULAR = "TAG_POPULAR";
+
+        String TAG_SEARCH = "TAG_SEARCH";
     }
 
     interface FIREBASE {

@@ -291,7 +291,7 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
             }
         });
     }
-    
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

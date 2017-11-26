@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,12 +28,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_POPULARITY_COUNT;
+import static com.lizarda.lizarda.Const.KEY_ARRAY_LIST_PRODUCT_ID;
 import static com.lizarda.lizarda.Const.KEY_BUTTON_ID;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_NEW_LISTING;
 import static com.lizarda.lizarda.Const.KEY_KATEGORI;
 import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
 import static com.lizarda.lizarda.Const.TAG.TAG_POPULAR;
+import static com.lizarda.lizarda.Const.TAG.TAG_SEARCH;
 
 public class ProductListActivity extends AppCompatActivity implements ListProdukCallback {
 
@@ -78,10 +81,16 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
             mButtonMoreId = mExtras.getInt(KEY_BUTTON_ID);
             String kategori = mExtras.getString(KEY_KATEGORI);
 
+            ArrayList<String> arrayListProductIdKey = (ArrayList<String>) getIntent().getSerializableExtra(KEY_ARRAY_LIST_PRODUCT_ID);
+            Log.d(TAG_SEARCH, "changeToolbarTitle: arrayListProductIdKey: " + arrayListProductIdKey);
+
+            // cek jika ini intent setelah user klik kategori
             if (kategori != null) {
                 fetchProduct(kategori);
                 mActionBar.setTitle(kategori);
-                // fetchNewListing();
+            } else if (arrayListProductIdKey != null) {
+                Log.d(TAG_SEARCH, "changeToolbarTitle: arrayListProductIdKey != null: fetchSearch...");
+                fetchProduct(arrayListProductIdKey);
             } else {
                 if (mButtonMoreId == R.id.btn_more_suggest_home) {
                     mActionBar.setTitle("Suggest");
@@ -100,6 +109,67 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 }
             }
         }
+    }
+
+
+    private void fetchProduct(final ArrayList<String> arrayListProductIdKey) {
+        mDatabaseRef.child(CHILD_PRODUCT).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!mProducts.isEmpty()) {
+                    mProducts.clear();
+                }
+
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+                        Product product = productDataSnapshot.getValue(Product.class);
+                        // cek jika id product ada di list
+                        mProducts.add(product);
+//                    for (String productId : arrayListProductIdKey) {
+//                        if (product.getId().equals(productId)) {
+//                            // Log.d(TAG_SEARCH, "onDataChange: product.getId(): " + product.getId());
+//                            Log.d(TAG_SEARCH, "onDataChange: product.getCategory(): " + product.getCategory() + " product.getName(): " + product.getName());
+//                        }
+//                    }
+
+//                        for (int i = 0; i < arrayListProductIdKey.size(); i++) {
+//                            if (product.getId().equals(arrayListProductIdKey.get(i))) {
+//                                mProducts.add(product);
+//                                Log.d(TAG_SEARCH, "onDataChange: if");
+//                            } else {
+//                                Log.d(TAG_SEARCH, "onDataChange: else");
+//                            }
+//                            // Log.d(TAG_SEARCH, "onDataChange: product.getCategory(): " + product.getCategory() + " product.getName(): " + product.getName());
+//                        }
+//
+//                        for (Product p : mProducts) {
+//                            Log.d(TAG_SEARCH, "onDataChange: Product: " + product.getId());
+//                        }
+                    }
+                    // FIXME: 11/26/17 BINGUNG!
+//                    for (int i = 0; i < mProducts.size(); i++) {
+//                        for (int j = 0; j < arrayListProductIdKey.size(); j++) {
+//                            if (mProducts.get(i).getId().equals(arrayListProductIdKey.get(j))) {
+//                                Log.d(TAG_SEARCH, "onDataChange: if");
+//                            } else {
+//                                Log.d(TAG_SEARCH, "onDataChange: else");
+//                            }
+//                        }
+//                    }
+
+
+                } else {
+                    Toast.makeText(ProductListActivity.this, "Tidak ada data", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void fetchProduct(final String kategori) {

@@ -13,6 +13,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,10 +25,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,13 +35,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lizarda.lizarda.R;
+import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.model.User;
+import com.lizarda.lizarda.ui.list_produk.ProductListActivity;
 import com.lizarda.lizarda.ui.profile.ProfileActivity;
 import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
 import com.lizarda.lizarda.ui.home.HomeFragment;
 
+import java.util.ArrayList;
+
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
+import static com.lizarda.lizarda.Const.KEY_ARRAY_LIST_PRODUCT_ID;
 import static com.lizarda.lizarda.Const.NOT_SET;
+import static com.lizarda.lizarda.Const.TAG.TAG_SEARCH;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -51,6 +57,8 @@ public class MainActivity extends AppCompatActivity
     private FirebaseUser mUser;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDatabaseRef;
+
+    private ArrayList<String> mProductsId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +93,8 @@ public class MainActivity extends AppCompatActivity
         ft.commit();
 
         setupFirebase();
+
+        mProductsId = new ArrayList<>();
 
         // check current user in db
         if (!isUserExistInDatabase(mUser.getUid())) {
@@ -199,7 +209,6 @@ public class MainActivity extends AppCompatActivity
 
         searchView.setSuggestionsAdapter(searchCursorAdapter);
 
-
         MenuItem searchMenuItem = menu.getItem(0);
 
         MenuItemCompat.setOnActionExpandListener(searchMenuItem,
@@ -215,10 +224,10 @@ public class MainActivity extends AppCompatActivity
                         return true;
                     }
                 });
-
     }
 
-    private void performSearch(String query) {
+
+    private void performSearch(final String query) {
         Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT).show();
 
         // cek pencarian apakah ada di database
@@ -226,8 +235,41 @@ public class MainActivity extends AppCompatActivity
         // kalo nggk ada, kasih notif nggk ada
 
         // disumsikan ada
-        navigateToDetailProdukActivity();
+        mDatabaseRef.child(CHILD_PRODUCT).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+
+                        Product product = productDataSnapshot.getValue(Product.class);
+
+                        if (product.getName().toLowerCase().contains(query.toLowerCase())
+                                || product.getCategory().toLowerCase().contains(query.toLowerCase())) {
+                            // Log.d(TAG_SEARCH, "onDataChange: query: " + query + " product.getName(): " + product.getName());
+                            mProductsId.add(product.getId());
+                        } else {
+                            Toast.makeText(MainActivity.this, "Tidak ada data.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    navigateToListActivity(mProductsId);
+                } else {
+                    Toast.makeText(MainActivity.this, "Tidak ada data.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void navigateToListActivity(ArrayList<String> productsId) {
+        Intent intent = new Intent(MainActivity.this, ProductListActivity.class);
+        // intent.putStringArrayListExtra(KEY_ARRAY_LIST_PRODUCT_ID, productsId);
+        intent.putExtra(KEY_ARRAY_LIST_PRODUCT_ID, productsId);
+        startActivity(intent);
     }
 
     private void navigateToDetailProdukActivity() {
