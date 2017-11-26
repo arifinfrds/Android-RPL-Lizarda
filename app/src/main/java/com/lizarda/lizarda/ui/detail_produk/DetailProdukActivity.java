@@ -239,10 +239,12 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        updatePopularityCountProductWithProductId(
-                mProduct.getId(),
-                mProduct.getPopularityCount() + 1
-        );
+        if (mProduct != null) {
+            updatePopularityCountProductWithProductId(
+                    mProduct.getId(),
+                    mProduct.getPopularityCount() + 1
+            );
+        }
     }
 
     private void performShare() {
