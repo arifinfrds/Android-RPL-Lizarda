@@ -38,6 +38,8 @@ public interface Const {
 
         String CHILD_IMAGES = "images";
 
+        String CHILD_COMMENT = "Comment";
+
 
         int LIMIT_SUGGEST = 10;
 
