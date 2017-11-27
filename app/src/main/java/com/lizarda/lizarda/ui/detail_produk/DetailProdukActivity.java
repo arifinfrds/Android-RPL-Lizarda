@@ -1,6 +1,7 @@
 package com.lizarda.lizarda.ui.detail_produk;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 
 import android.support.v7.app.ActionBar;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +19,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,9 +29,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lizarda.lizarda.R;
+import com.lizarda.lizarda.model.Comment;
 import com.lizarda.lizarda.model.Model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +43,7 @@ import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.model.User;
 import com.squareup.picasso.Picasso;
 
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_COMMENT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_POPULARITY_COUNT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
@@ -88,6 +96,10 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
 
     private Product mProduct;
 
+    private String mProductId;
+
+    private ArrayList<Comment> mComments;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,10 +115,13 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
 
         setupFirebase();
 
+        mComments = new ArrayList<>();
+
         mExtras = getIntent().getExtras();
         if (mExtras != null) {
-            String productId = mExtras.getString(KEY_PRODUCT_ID);
-            fetchProductWithId(productId);
+            mProductId = mExtras.getString(KEY_PRODUCT_ID);
+            fetchProductWithId(mProductId);
+            fetchCommentWithProductId(mProductId);
         }
 
 
@@ -118,9 +133,60 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
 
         mModels = Model.generateModels();
 
-        mCommentAdapter = new CommentAdapter(mModels, this);
-
         setupRecyclerView(mRvComment);
+    }
+
+    private void fetchCommentWithProductId(String productId) {
+        mDatabaseRef.child(CHILD_COMMENT).child(productId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!mComments.isEmpty()) {
+                    mComments.clear();
+                }
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot commentDataSnapshot : dataSnapshot.getChildren()) {
+
+                        if (commentDataSnapshot.exists()) {
+                            Comment comment = commentDataSnapshot.getValue(Comment.class);
+                            Log.d(CHILD_COMMENT, "onDataChange: ");
+                            mComments.add(comment);
+                        }
+                        setupRecyclerView(mRvComment);
+                    }
+                    fetchCommentUsername(mComments);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void fetchCommentUsername(final ArrayList<Comment> comments) {
+        final ArrayList<User> mUsers = new ArrayList<>();
+
+        mDatabaseRef.child(CHILD_USER).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    User user = dataSnapshot.getValue(User.class);
+                    mUsers.add(user);
+                }
+
+                // TODO: 11/27/17 fetch email / username tiap2 user yang comment
+//                for (Comment comment : comments) {
+//                    // comment.getCommentOwnerId();
+//
+//                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
@@ -178,7 +244,13 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setFocusable(false);
         recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setAdapter(mCommentAdapter);
+
+        recyclerView.setAdapter(
+                new CommentAdapter(
+                        mComments,
+                        this
+                )
+        );
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(
                         this,
@@ -213,7 +285,41 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
     }
 
     // MARK: - kodingan upload ke fireabse
-    private void uploadComment(String comment) {
+    private void uploadComment(String message) {
+
+        if (mProductId != null) {
+            String commentId = mDatabaseRef.push().getKey();
+            Comment comment = new Comment(
+                    commentId,
+                    mUser.getUid(),
+                    message,
+                    new Date()
+            );
+            mDatabaseRef.child(CHILD_COMMENT).child(mProductId).child(commentId).setValue(comment)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(CHILD_COMMENT, "onSuccess: ");
+                            Toast.makeText(
+                                    DetailProdukActivity.this,
+                                    "Pesan tertambah.",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(CHILD_COMMENT, "onFailure: ");
+                            Toast.makeText(
+                                    DetailProdukActivity.this,
+                                    "Terjadi kesalahan. Pesan gagal tertambah.",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    });
+            mEtComment.setText("");
+        }
     }
 
     @Override

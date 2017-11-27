@@ -1,5 +1,7 @@
 package com.lizarda.lizarda.model;
 
+import java.util.ArrayList;
+
 /**
  * Created by arifinfrds on 11/20/17.
  */

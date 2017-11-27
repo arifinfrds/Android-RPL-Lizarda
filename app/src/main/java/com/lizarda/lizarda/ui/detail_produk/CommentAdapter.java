@@ -9,9 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lizarda.lizarda.R;
+import com.lizarda.lizarda.model.Comment;
 import com.lizarda.lizarda.model.Model;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**
@@ -20,12 +25,12 @@ import java.util.ArrayList;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
 
-    private ArrayList<Model> mModels;
+    private ArrayList<Comment> mComments;
     private Context mContext;
 
-    public CommentAdapter(ArrayList<Model> mModels, Context mContext) {
-        this.mModels = mModels;
-        this.mContext = mContext;
+    public CommentAdapter(ArrayList<Comment> comments, Context context) {
+        this.mComments = comments;
+        this.mContext = context;
     }
 
     @Override
@@ -37,24 +42,36 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        Comment comment = mComments.get(position);
+
+        holder.mTvUsername.setText(comment.getCommentOwnerId());
+        holder.mTvComment.setText(comment.getText());
 
     }
 
     @Override
     public int getItemCount() {
-        return mModels.size();
+        return mComments.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public View mView;
-        public ImageView mIvDivisi;
-        public TextView mTvNamaDivisi;
 
+        public View mView;
+
+        @BindView(R.id.iv_user_comment_detail_produk)
+        CircleImageView mCivProfile;
+
+        @BindView(R.id.tv_username_comment_detail_produk)
+        TextView mTvUsername;
+
+        @BindView(R.id.tv_detail_comment_detail_produk)
+        TextView mTvComment;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
 
+            ButterKnife.bind(this, view);
         }
     }
 }
