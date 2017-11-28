@@ -119,7 +119,6 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 if (!mProducts.isEmpty()) {
                     mProducts.clear();
                 }
-
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
                         Product product = productDataSnapshot.getValue(Product.class);
@@ -176,7 +175,9 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
         mDatabaseRef.child(CHILD_PRODUCT).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                if (!mProducts.isEmpty()) {
+                    mProducts.clear();
+                }
                 for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
                     Product product = productDataSnapshot.getValue(Product.class);
 
@@ -199,6 +200,9 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
         mDatabaseRef.child(CHILD_PRODUCT).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!mProducts.isEmpty()) {
+                    mProducts.clear();
+                }
                 for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
                     Product product = productDataSnapshot.getValue(Product.class);
                     mProducts.add(product);
@@ -218,6 +222,9 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
         mDatabaseRef.child(CHILD_PRODUCT).orderByChild(CHILD_POPULARITY_COUNT).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!mProducts.isEmpty()) {
+                    mProducts.clear();
+                }
                 for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
                     Product product = productDataSnapshot.getValue(Product.class);
                     Log.d(TAG_POPULAR, "onDataChange: product.getPopularityCount(): " + product.getPopularityCount());
@@ -238,6 +245,9 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
         mDatabaseRef.child(CHILD_PRODUCT).limitToLast(LIMIT_NEW_LISTING).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!mProducts.isEmpty()) {
+                    mProducts.clear();
+                }
                 for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
                     Product product = productDataSnapshot.getValue(Product.class);
                     mProducts.add(product);
