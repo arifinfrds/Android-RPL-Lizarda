@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
@@ -83,10 +84,6 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
     @BindView(R.id.iv_produk_detail_produk)
     ImageView mIvProduk;
 
-    private CommentAdapter mCommentAdapter;
-
-    private ArrayList<Model> mModels;
-
     private Bundle mExtras;
 
     private FirebaseAuth mAuth;
@@ -113,6 +110,8 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         setupFirebase();
 
         mComments = new ArrayList<>();
@@ -124,17 +123,16 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
             fetchCommentWithProductId(mProductId);
         }
 
-
         ButterKnife.bind(this);
 
         mBtnSendComment.setOnClickListener(this);
 
         mToolbarLayout.setTitle("Green Iguana");
 
-        mModels = Model.generateModels();
-
         setupRecyclerView(mRvComment);
     }
+
+    private ArrayList<User> mUsers = new ArrayList<>();
 
     private void fetchCommentWithProductId(String productId) {
         mDatabaseRef.child(CHILD_COMMENT).child(productId).addValueEventListener(new ValueEventListener() {
@@ -149,11 +147,29 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
                         if (commentDataSnapshot.exists()) {
                             Comment comment = commentDataSnapshot.getValue(Comment.class);
                             Log.d(CHILD_COMMENT, "onDataChange: ");
+                            fetchEmailUsers();
                             mComments.add(comment);
                         }
                         setupRecyclerView(mRvComment);
                     }
                     fetchCommentUsername(mComments);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void fetchEmailUsers() {
+        mDatabaseRef.child(CHILD_USER).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    User user = userSnapshot.getValue(User.class);
+                    mUsers.add(user);
                 }
             }
 
