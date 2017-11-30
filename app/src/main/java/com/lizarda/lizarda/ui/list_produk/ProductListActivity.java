@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -46,6 +47,9 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
     @BindView(R.id.rv_list_detail_kategori)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.progress_bar_list)
+    ProgressBar mProgressBar;
+
     private Bundle mExtras;
     private int mButtonMoreId;
 
@@ -55,7 +59,6 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
     private FirebaseUser mUser;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDatabaseRef;
-    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +72,12 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
             mActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        ButterKnife.bind(this);
+
         setupFirebase();
 
         changeToolbarTitle();
 
-        ButterKnife.bind(this);
         prepareData();
     }
 
@@ -193,9 +197,10 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                showErrorMessage();
             }
         });
+        mProgressBar.setVisibility(View.GONE);
     }
 
     private void fetchProduct() {
@@ -215,10 +220,12 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                showErrorMessage();
             }
         });
+        mProgressBar.setVisibility(View.GONE);
     }
+
 
     private void fetchPopular() {
         mDatabaseRef.child(CHILD_PRODUCT).orderByChild(CHILD_POPULARITY_COUNT).addValueEventListener(new ValueEventListener() {
@@ -238,9 +245,10 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                showErrorMessage();
             }
         });
+        mProgressBar.setVisibility(View.GONE);
     }
 
     private void fetchNewListing() {
@@ -260,9 +268,10 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                showErrorMessage();
             }
         });
+        mProgressBar.setVisibility(View.GONE);
     }
 
 
@@ -340,4 +349,11 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
         return super.onOptionsItemSelected(item);
     }
 
+    private void showErrorMessage() {
+        Toast.makeText(
+                ProductListActivity.this,
+                "Terjadi kesalahan. Silahkan coba lagi.",
+                Toast.LENGTH_SHORT
+        ).show();
+    }
 }
