@@ -26,6 +26,8 @@ public interface Const {
         String TAG_POPULAR = "TAG_POPULAR";
 
         String TAG_SEARCH = "TAG_SEARCH";
+
+        String TAG_DETAIL_PRODUK_UI = "TAG_DETAIL_PRODUK_UI";
     }
 
     interface FIREBASE {
