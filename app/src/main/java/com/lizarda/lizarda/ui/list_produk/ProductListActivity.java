@@ -193,14 +193,15 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 }
                 // updateUI
                 setupRecyclerView();
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 showErrorMessage();
+                mProgressBar.setVisibility(View.GONE);
             }
         });
-        mProgressBar.setVisibility(View.GONE);
     }
 
     private void fetchProduct() {
@@ -216,14 +217,15 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 }
                 // updateUI
                 setupRecyclerView();
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 showErrorMessage();
+                mProgressBar.setVisibility(View.GONE);
             }
         });
-        mProgressBar.setVisibility(View.GONE);
     }
 
 
@@ -241,14 +243,15 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 }
                 // updateUI
                 setupRecyclerView();
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 showErrorMessage();
+                mProgressBar.setVisibility(View.GONE);
             }
         });
-        mProgressBar.setVisibility(View.GONE);
     }
 
     private void fetchNewListing() {
@@ -264,14 +267,15 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 }
                 // updateUI
                 setupRecyclerView();
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 showErrorMessage();
+                mProgressBar.setVisibility(View.GONE);
             }
         });
-        mProgressBar.setVisibility(View.GONE);
     }
 
 

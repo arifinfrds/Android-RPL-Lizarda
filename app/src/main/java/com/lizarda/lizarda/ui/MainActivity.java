@@ -23,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,6 +45,9 @@ import com.lizarda.lizarda.ui.home.HomeFragment;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
 import static com.lizarda.lizarda.Const.KEY_ARRAY_LIST_PRODUCT_ID;
@@ -59,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     private DatabaseReference mDatabaseRef;
 
     private ArrayList<String> mProductsId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +107,11 @@ public class MainActivity extends AppCompatActivity
         } else {
             Toast.makeText(this, "Database user sudah ada.", Toast.LENGTH_SHORT).show();
         }
+
+
+        // navHeaderView= navigationView.inflateHeaderView(R.layout.nav_header_main);
+        // tvHeaderName= (TextView) navHeaderView.findViewById(R.id.tvHeaderName);
+        // tvHeaderName.setText("Saly");
     }
 
     private boolean isUserExistInDatabase(String uid) {
