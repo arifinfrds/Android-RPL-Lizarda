@@ -8,15 +8,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Comment;
 import com.lizarda.lizarda.model.Model;
+import com.lizarda.lizarda.model.User;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
 
 
 /**
@@ -27,10 +34,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     private ArrayList<Comment> mComments;
     private Context mContext;
+    private DatabaseReference mDatabaseRef;
 
-    public CommentAdapter(ArrayList<Comment> comments, Context context) {
+    public CommentAdapter(ArrayList<Comment> comments, Context context, DatabaseReference databaseRef) {
         this.mComments = comments;
         this.mContext = context;
+        this.mDatabaseRef = databaseRef;
     }
 
     @Override
@@ -41,12 +50,24 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         Comment comment = mComments.get(position);
-
         holder.mTvUsername.setText(comment.getCommentOwnerId());
         holder.mTvComment.setText(comment.getText());
 
+        mDatabaseRef.child(CHILD_USER).child(comment.getCommentOwnerId())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        holder.mTvUsername.setText(user.getEmail());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     @Override
