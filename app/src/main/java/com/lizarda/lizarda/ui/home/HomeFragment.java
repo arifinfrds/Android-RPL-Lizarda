@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,11 +34,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_POPULARITY_COUNT;
+import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_POPULAR;
 import static com.lizarda.lizarda.Const.FIREBASE.PRODUCT_DEFAULT_POPULARITY_COUNT;
 import static com.lizarda.lizarda.Const.KEY_BUTTON_ID;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_NEW_LISTING;
-import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_SUGGEST;
+import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_EXPLORE;
 import static com.lizarda.lizarda.Const.KEY_KATEGORI;
 import static com.lizarda.lizarda.Const.TAG.TAG_POPULAR;
 
@@ -71,7 +71,7 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
     @BindView(R.id.rv_new_listing_home)
     RecyclerView mRvNewListing;
 
-    @BindView(R.id.btn_more_suggest_home)
+    @BindView(R.id.btn_more_explore_home)
     Button mBtnMoreSuggest;
 
     @BindView(R.id.btn_more_popular_home)
@@ -89,8 +89,8 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
     @BindView(R.id.progress_bar_new_listing_home)
     ProgressBar mProgressBarNewListing;
 
-    @BindView(R.id.tv_section_suggest_home)
-    TextView mTvSectionSuggest;
+    @BindView(R.id.tv_section_explore_home)
+    TextView mTvSectionExplore;
 
     @BindView(R.id.tv_section_popular_home)
     TextView mTvSectionPopular;
@@ -167,11 +167,11 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
     public void onResume() {
         super.onResume();
 
-        mTvSectionSuggest.setText("Suggest");
+        mTvSectionExplore.setText("Explore");
         mTvSectionPopular.setText("Popular");
         mTvSectionNewListing.setText("New Listing");
 
-        fetchSuggest();
+        fetchExplore();
         fetchPopular();
         fetchNewListing();
     }
@@ -208,8 +208,8 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
     }
 
 
-    private void fetchSuggest() {
-        mDatabaseRef.child(CHILD_PRODUCT).limitToFirst(LIMIT_SUGGEST).addValueEventListener(new ValueEventListener() {
+    private void fetchExplore() {
+        mDatabaseRef.child(CHILD_PRODUCT).limitToFirst(LIMIT_EXPLORE).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!mSuggestProducts.isEmpty()) {
@@ -224,7 +224,7 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
                     mProgressBarSuggest.setVisibility(View.GONE);
                     setupRecyclerView(mRvSuggest);
                 } else {
-                    mTvSectionSuggest.setText("Suggest - Tidak ada data");
+                    mTvSectionExplore.setText("Suggest - Tidak ada data");
                 }
             }
 
@@ -236,7 +236,8 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
     }
 
     private void fetchPopular() {
-        mDatabaseRef.child(CHILD_PRODUCT).orderByChild(CHILD_POPULARITY_COUNT).addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.child(CHILD_PRODUCT).limitToLast(LIMIT_POPULAR)
+                .orderByChild(CHILD_POPULARITY_COUNT).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!mPopularProducts.isEmpty()) {
@@ -295,8 +296,8 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_more_suggest_home:
-                navigateToProductListActivity(R.id.btn_more_suggest_home);
+            case R.id.btn_more_explore_home:
+                navigateToProductListActivity(R.id.btn_more_explore_home);
                 break;
             case R.id.btn_more_popular_home:
                 navigateToProductListActivity(R.id.btn_more_popular_home);
@@ -318,8 +319,8 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
 
         Intent intent = new Intent(getContext(), ProductListActivity.class);
 
-        if (fromButtonId == R.id.btn_more_suggest_home) {
-            intent.putExtra(KEY_BUTTON_ID, R.id.btn_more_suggest_home);
+        if (fromButtonId == R.id.btn_more_explore_home) {
+            intent.putExtra(KEY_BUTTON_ID, R.id.btn_more_explore_home);
 
         } else if (fromButtonId == R.id.btn_more_popular_home) {
             intent.putExtra(KEY_BUTTON_ID, R.id.btn_more_popular_home);

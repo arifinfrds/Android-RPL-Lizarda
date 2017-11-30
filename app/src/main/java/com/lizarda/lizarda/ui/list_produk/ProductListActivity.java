@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -54,11 +55,12 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
     private FirebaseUser mUser;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDatabaseRef;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail_category_list);
+        setContentView(R.layout.activity_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -92,9 +94,9 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 Log.d(TAG_SEARCH, "changeToolbarTitle: arrayListProductIdKey != null: fetchSearch...");
                 fetchProduct(arrayListProductIdKey);
             } else {
-                if (mButtonMoreId == R.id.btn_more_suggest_home) {
-                    mActionBar.setTitle("Suggest");
-                    // fetch suggest ...
+                if (mButtonMoreId == R.id.btn_more_explore_home) {
+                    mActionBar.setTitle("Explore");
+                    // fetch explore ...
                     fetchProduct();
                 }
                 if (mButtonMoreId == R.id.btn_more_popular_home) {
