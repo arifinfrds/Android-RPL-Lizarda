@@ -43,7 +43,9 @@ public interface Const {
         String CHILD_COMMENT = "Comment";
 
 
-        int LIMIT_SUGGEST = 10;
+        int LIMIT_EXPLORE = 10;
+
+        int LIMIT_POPULAR = 10;
 
         int LIMIT_NEW_LISTING = 10;
 
