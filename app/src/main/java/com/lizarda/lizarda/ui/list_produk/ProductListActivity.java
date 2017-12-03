@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,6 +47,9 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
     @BindView(R.id.rv_list_detail_kategori)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.progress_bar_list)
+    ProgressBar mProgressBar;
+
     private Bundle mExtras;
     private int mButtonMoreId;
 
@@ -58,7 +63,7 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail_category_list);
+        setContentView(R.layout.activity_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -67,11 +72,12 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
             mActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        ButterKnife.bind(this);
+
         setupFirebase();
 
         changeToolbarTitle();
 
-        ButterKnife.bind(this);
         prepareData();
     }
 
@@ -92,9 +98,9 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 Log.d(TAG_SEARCH, "changeToolbarTitle: arrayListProductIdKey != null: fetchSearch...");
                 fetchProduct(arrayListProductIdKey);
             } else {
-                if (mButtonMoreId == R.id.btn_more_suggest_home) {
-                    mActionBar.setTitle("Suggest");
-                    // fetch suggest ...
+                if (mButtonMoreId == R.id.btn_more_explore_home) {
+                    mActionBar.setTitle("Explore");
+                    // fetch explore ...
                     fetchProduct();
                 }
                 if (mButtonMoreId == R.id.btn_more_popular_home) {
@@ -187,11 +193,13 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 }
                 // updateUI
                 setupRecyclerView();
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                showErrorMessage();
+                mProgressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -209,14 +217,17 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 }
                 // updateUI
                 setupRecyclerView();
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                showErrorMessage();
+                mProgressBar.setVisibility(View.GONE);
             }
         });
     }
+
 
     private void fetchPopular() {
         mDatabaseRef.child(CHILD_PRODUCT).orderByChild(CHILD_POPULARITY_COUNT).addValueEventListener(new ValueEventListener() {
@@ -232,11 +243,13 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 }
                 // updateUI
                 setupRecyclerView();
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                showErrorMessage();
+                mProgressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -254,11 +267,13 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                 }
                 // updateUI
                 setupRecyclerView();
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                showErrorMessage();
+                mProgressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -338,4 +353,11 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
         return super.onOptionsItemSelected(item);
     }
 
+    private void showErrorMessage() {
+        Toast.makeText(
+                ProductListActivity.this,
+                "Terjadi kesalahan. Silahkan coba lagi.",
+                Toast.LENGTH_SHORT
+        ).show();
+    }
 }

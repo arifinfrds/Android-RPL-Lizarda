@@ -2,8 +2,11 @@ package com.lizarda.lizarda.ui.detail_produk;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,8 +15,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
@@ -31,9 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Comment;
-import com.lizarda.lizarda.model.Model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -50,6 +53,7 @@ import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
 import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
 import static com.lizarda.lizarda.Const.NOT_SET;
+import static com.lizarda.lizarda.Const.TAG.TAG_DETAIL_PRODUK_UI;
 
 
 public class DetailProdukActivity extends AppCompatActivity implements View.OnClickListener {
@@ -84,6 +88,15 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
     @BindView(R.id.iv_produk_detail_produk)
     ImageView mIvProduk;
 
+    @BindView(R.id.nested_scroll_view_detail_produk)
+    NestedScrollView mNestedScrollView;
+
+    @BindView(R.id.app_bar)
+    AppBarLayout mAppBarLayout;
+
+    @BindView(R.id.coordinator_layout_detail_produk)
+    CoordinatorLayout mCoordinatorLayout;
+
     private Bundle mExtras;
 
     private FirebaseAuth mAuth;
@@ -97,7 +110,6 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
 
     private ArrayList<Comment> mComments;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,8 +122,18 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        // Binding UI component
+        ButterKnife.bind(this);
+
+        // sembunyikan keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        // scoll ke paling atas
+        scollToTop();
+
+        setupEditTextComment();
+
+        // setup Firebase API
         setupFirebase();
 
         mComments = new ArrayList<>();
@@ -123,8 +145,6 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
             fetchCommentWithProductId(mProductId);
         }
 
-        ButterKnife.bind(this);
-
         mBtnSendComment.setOnClickListener(this);
 
         mToolbarLayout.setTitle("Green Iguana");
@@ -132,7 +152,6 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
         setupRecyclerView(mRvComment);
     }
 
-    private ArrayList<User> mUsers = new ArrayList<>();
 
     private void fetchCommentWithProductId(String productId) {
         mDatabaseRef.child(CHILD_COMMENT).child(productId).addValueEventListener(new ValueEventListener() {
@@ -147,12 +166,10 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
                         if (commentDataSnapshot.exists()) {
                             Comment comment = commentDataSnapshot.getValue(Comment.class);
                             Log.d(CHILD_COMMENT, "onDataChange: ");
-                            fetchEmailUsers();
                             mComments.add(comment);
                         }
                         setupRecyclerView(mRvComment);
                     }
-                    fetchCommentUsername(mComments);
                 }
             }
 
@@ -162,49 +179,6 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
             }
         });
     }
-
-    private void fetchEmailUsers() {
-        mDatabaseRef.child(CHILD_USER).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    User user = userSnapshot.getValue(User.class);
-                    mUsers.add(user);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void fetchCommentUsername(final ArrayList<Comment> comments) {
-        final ArrayList<User> mUsers = new ArrayList<>();
-
-        mDatabaseRef.child(CHILD_USER).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    User user = dataSnapshot.getValue(User.class);
-                    mUsers.add(user);
-                }
-
-                // TODO: 11/27/17 fetch email / username tiap2 user yang comment
-//                for (Comment comment : comments) {
-//                    // comment.getCommentOwnerId();
-//
-//                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
 
     private void fetchProductWithId(final String productId) {
         mDatabaseRef.child(CHILD_PRODUCT).child(productId).addValueEventListener(new ValueEventListener() {
@@ -264,7 +238,8 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
         recyclerView.setAdapter(
                 new CommentAdapter(
                         mComments,
-                        this
+                        this,
+                        mDatabaseRef
                 )
         );
         recyclerView.setLayoutManager(
@@ -372,4 +347,64 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
     private void performShare() {
         Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
     }
+
+
+    private void setupEditTextComment() {
+        mEtComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSoftKeyboard(v);
+                mEtComment.setFocusable(true);
+            }
+        });
+
+        mEtComment.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                showSoftKeyboard(v);
+                mEtComment.setFocusable(true);
+                return false;
+            }
+        });
+    }
+
+
+    /**
+     * Hides the soft keyboard
+     */
+    public void hideSoftKeyboard() {
+        if (getCurrentFocus() != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
+    /**
+     * Shows the soft keyboard
+     */
+    public void showSoftKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        view.requestFocus();
+        inputMethodManager.showSoftInput(view, 0);
+    }
+
+    private void scollToTop() {
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+        if (behavior != null) {
+            behavior.onNestedFling(
+                    mCoordinatorLayout,
+                    mAppBarLayout,
+                    null,
+                    0,
+                    10000,
+                    true
+            );
+            Log.d(TAG_DETAIL_PRODUK_UI, "onCreate: behavior is not null");
+        } else {
+            Log.d(TAG_DETAIL_PRODUK_UI, "onCreate: behavior is null");
+        }
+    }
+
+
 }

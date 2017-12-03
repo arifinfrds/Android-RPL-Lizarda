@@ -26,6 +26,8 @@ public interface Const {
         String TAG_POPULAR = "TAG_POPULAR";
 
         String TAG_SEARCH = "TAG_SEARCH";
+
+        String TAG_DETAIL_PRODUK_UI = "TAG_DETAIL_PRODUK_UI";
     }
 
     interface FIREBASE {
@@ -41,7 +43,9 @@ public interface Const {
         String CHILD_COMMENT = "Comment";
 
 
-        int LIMIT_SUGGEST = 10;
+        int LIMIT_EXPLORE = 10;
+
+        int LIMIT_POPULAR = 10;
 
         int LIMIT_NEW_LISTING = 10;
 
