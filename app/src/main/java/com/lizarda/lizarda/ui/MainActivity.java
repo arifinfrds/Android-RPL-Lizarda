@@ -97,11 +97,11 @@ public class MainActivity extends AppCompatActivity
         mProductsId = new ArrayList<>();
 
         // check current user in db
-        if (!isUserExistInDatabase(mUser.getUid())) {
-            createUser();
-        } else {
-            Toast.makeText(this, "Database user sudah ada.", Toast.LENGTH_SHORT).show();
-        }
+//        if (!isUserExistInDatabase(mUser.getUid())) {
+//            createUser();
+//        } else {
+//            Toast.makeText(this, "Database user sudah ada.", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     private boolean isUserExistInDatabase(String uid) {
@@ -120,23 +120,23 @@ public class MainActivity extends AppCompatActivity
         return isExist[0];
     }
 
-    private void createUser() {
-        User user = new User(mUser.getUid(), mUser.getEmail(), NOT_SET, NOT_SET, false, 500000);
-
-        mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).setValue(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(MainActivity.this, "Database user sukses terbuat.", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MainActivity.this, "Database user gagal terbuat.", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
+//    private void createUser() {
+//        User user = new User(mUser.getUid(), mUser.getEmail(), NOT_SET, NOT_SET, false, 500000);
+//
+//        mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).setValue(user)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Toast.makeText(MainActivity.this, "Database user sukses terbuat.", Toast.LENGTH_SHORT).show();
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(MainActivity.this, "Database user gagal terbuat.", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//    }
 
     private void setupFirebase() {
         mAuth = FirebaseAuth.getInstance();

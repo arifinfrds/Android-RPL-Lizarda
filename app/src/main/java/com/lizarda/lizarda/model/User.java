@@ -10,19 +10,23 @@ public class User {
     private String email;
     private String nama;
     private String photoUrl;
+    private String alamat;
+    private String deskripsi;
     private boolean isAdmin;
     private double saldo;
 
     public User() {
     }
 
-    public User(String id, String email, String nama, String photoUrl, boolean isAdmin, double saldo) {
+    public User(String id, String email, String nama, String photoUrl,String alamat, String deskripsi, boolean isAdmin, double saldo) {
         this.id = id;
         this.email = email;
         this.nama = nama;
         this.photoUrl = photoUrl;
         this.isAdmin = isAdmin;
         this.saldo = saldo;
+        this.alamat = alamat;
+        this.deskripsi = deskripsi;
     }
 
     public String getId() {
@@ -32,6 +36,20 @@ public class User {
     public void setId(String id) {
         this.id = id;
     }
+
+    public String getAlamat() {
+        return alamat;
+    }
+
+    public void setAlamat(String alamat) {
+        this.alamat = alamat;
+    }
+
+    public String getDeskripsi() {
+        return deskripsi;
+    }
+
+    public void setDeskripsi(String deskripsi) {this.deskripsi = deskripsi;}
 
     public String getEmail() {
         return email;

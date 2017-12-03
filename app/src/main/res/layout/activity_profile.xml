@@ -8,6 +8,7 @@
 
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -23,8 +24,12 @@
                 android:src="@drawable/lasemback" />
 
             <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true" />
 
 
             <LinearLayout
@@ -43,6 +48,7 @@
                     app:civ_border_width="4dp" />
 
                 <TextView
+                    android:id="@+id/txt_nama"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -52,6 +58,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/txt_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="\@lasemcode"
@@ -74,7 +81,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="8dp"
-                        android:text="Lasem, Rembang, Indonesia"
+                        android:text="Malang"
                         android:textColor="@android:color/white"
                         android:textStyle="bold" />
 
@@ -165,21 +172,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lasem Code"
+                android:text="Alamat "
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="\@lasemcode"
-                android:textColor="#37474F" />
-
-            <TextView
+                android:id="@+id/txt_alamat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus mattis posuere quam" />
+                android:text="-------------" />
 
         </LinearLayout>
 
@@ -197,18 +199,19 @@
             android:padding="16dp">
 
             <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:paddingBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/txt_deskripsi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
-                mattis posuere quam, non finibus augue tempus id. Curabitur ut ultricies mi. Donec
-                eget consectetur metus. Duis maximus lacinia orci, pellentesque commodo diam
-                ultricies condimentum. Morbi consectetur rutrum vehicula. Nullam efficitur enim vel
-                est varius, eu dictum sem sagittis. Pellentesque congue ante ac urna molestie
-                vestibulum. Praesent tempus velit id diam rutrum efficitur eu vel lectus. Aliquam
-                lacinia tortor dolor, eu porta purus bibendum ac. Maecenas gravida lorem sed orci
-                varius vestibulum. In ac vestibulum quam, ac varius diam. Fusce consequat velit vel
-                ipsum tempor, nec cursus nibh elementum. Sed volutpat, ipsum eu sollicitudin mollis,
-                 neque lacus malesuada lacus, quis porttitor erat turpis ac leo." />
+                android:text="-------------" />
 
         </LinearLayout>
 
@@ -221,6 +224,16 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_action_add" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@+id/appBarLayout"
+        app:layout_anchorGravity="right|top"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
 
 </android.support.design.widget.CoordinatorLayout>
 
