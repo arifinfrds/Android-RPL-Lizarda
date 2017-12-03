@@ -91,8 +91,8 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
     private DatabaseReference mDatabaseRef;
     private StorageReference mStorageRef;
 
-    public static final int REQUEST_PICK_IMAGE = 1;
-    public static final int REQUEST_IMAGE_CAPTURE = 2;
+    public static final int REQUEST_PICK_IMAGE1 = 1;
+    public static final int REQUEST_IMAGE_CAPTURE1 = 2;
     private String mCurrentPhotoPath;
 
     private String mImageDownloadUrl;
@@ -188,13 +188,13 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_PICK_IMAGE);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_PICK_IMAGE1);
     }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE1);
         }
     }
 
@@ -240,7 +240,7 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == REQUEST_PICK_IMAGE1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri uri = data.getData();
             Log.d(URI, "onActivityResult: uri.toString() : " + uri.toString());
             Log.d(URI, "onActivityResult: uri.getPath() : " + uri.getPath());
@@ -269,7 +269,7 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
             }
         }
 
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE1 && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             // update UI
             Bitmap imageBitmap = (Bitmap) extras.get("data");

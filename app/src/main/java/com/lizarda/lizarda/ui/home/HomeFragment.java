@@ -28,6 +28,8 @@ import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.ui.list_produk.ProductListActivity;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -98,7 +100,6 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
     @BindView(R.id.tv_section_new_listing_home)
     TextView mTvSectionNewListing;
 
-
     private HomeKategoriAdapter mHomeKategoriAdapter;
     private HomeSuggestAdapter mHomeSuggestAdapter;
     private HomePopularAdapter mHomePopularAdapter;
@@ -137,6 +138,9 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+
+
         ButterKnife.bind(this, view);
         return view;
     }
