@@ -28,8 +28,6 @@ import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.ui.list_produk.ProductListActivity;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -101,7 +99,7 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
     TextView mTvSectionNewListing;
 
     private HomeKategoriAdapter mHomeKategoriAdapter;
-    private HomeSuggestAdapter mHomeSuggestAdapter;
+    private HomeExploreAdapter mHomeExploreAdapter;
     private HomePopularAdapter mHomePopularAdapter;
     private HomeNewListingAdapter mHomeNewListingAdapter;
 
@@ -365,7 +363,7 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
             recyclerView.setLayoutManager(defaultHorizontalLayout);
         }
 
-        mHomeSuggestAdapter = new HomeSuggestAdapter(mSuggestProducts, getContext());
+        mHomeExploreAdapter = new HomeExploreAdapter(mSuggestProducts, getContext());
         mHomePopularAdapter = new HomePopularAdapter(mPopularProducts, getContext());
         mHomeNewListingAdapter = new HomeNewListingAdapter(mNewListingProducts, getContext());
 
@@ -374,7 +372,7 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
                 recyclerView.setAdapter(mHomeKategoriAdapter);
                 break;
             case R.id.rv_suggest_home:
-                recyclerView.setAdapter(mHomeSuggestAdapter);
+                recyclerView.setAdapter(mHomeExploreAdapter);
                 break;
             case R.id.rv_popular_home:
                 recyclerView.setAdapter(mHomePopularAdapter);

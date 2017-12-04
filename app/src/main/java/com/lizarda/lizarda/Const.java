@@ -28,11 +28,15 @@ public interface Const {
         String TAG_SEARCH = "TAG_SEARCH";
 
         String TAG_DETAIL_PRODUK_UI = "TAG_DETAIL_PRODUK_UI";
+
+        String TAG_BUY_PRODUCT = "TAG_BUY_PRODUCT";
     }
 
     interface FIREBASE {
 
         String CHILD_USER = "User";
+
+        String CHILD_SALDO = "saldo";
 
         String CHILD_PRODUCT = "Product";
 

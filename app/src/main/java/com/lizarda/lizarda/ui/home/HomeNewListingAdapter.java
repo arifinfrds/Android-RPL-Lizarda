@@ -54,6 +54,12 @@ public class HomeNewListingAdapter extends RecyclerView.Adapter<HomeNewListingAd
         holder.mTvTitle.setText(product.getName());
         holder.mTvHarga.setText("Rp. " + product.getPrice());
 
+        if (product.isSold()) {
+            holder.mTvHarga.setText(mContext.getResources().getString(R.string.status_sold));
+        } else {
+            holder.mTvHarga.setText("Rp. " + product.getPrice());
+        }
+
         if (product.getPhotoUrl().equalsIgnoreCase(NOT_SET)) {
             Picasso.with(mContext).load(R.drawable.no_image).resize(70, 70).into(holder.mIvThumbnail);
         } else {
