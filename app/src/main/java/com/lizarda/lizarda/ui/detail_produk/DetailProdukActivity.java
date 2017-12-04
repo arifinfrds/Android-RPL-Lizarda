@@ -346,8 +346,6 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
 
         // ubah satatus barang terjual
         mProduct.setSold(true);
-
-
     }
 
     private void updateSaldoUser(final DialogInterface dialog) {
@@ -373,8 +371,6 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
                 });
     }
 
-
-    // FIXME: 12/4/17 BUG. kepanggil terus menerus gile.!
     private void setSaldoBaruUser(final DialogInterface dialog) {
         // get current user saldo
         mDatabaseRef.child(CHILD_USER).child(mUser.getUid())

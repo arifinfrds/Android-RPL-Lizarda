@@ -7,10 +7,12 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telecom.Call;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -63,11 +65,18 @@ public class edtProfileActivity extends AppCompatActivity implements View.OnClic
     public static final int REQUEST_PICK_IMAGE = 1;
     public static final int REQUEST_IMAGE_CAPTURE = 2;
 
+    private ActionBar mActionBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edt_profile);
+
+        mActionBar = getSupportActionBar();
+        if (mActionBar != null) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -84,7 +93,8 @@ public class edtProfileActivity extends AppCompatActivity implements View.OnClic
 
         mIvProduct = (ImageView) findViewById(R.id.img_user);
     }
-    private void updateUser(){
+
+    private void updateUser() {
         String nama = input_nama.getText().toString();
         String alamat = input_alamat.getText().toString();
         String deskripsi = input_deskripsi.getText().toString();
@@ -100,7 +110,10 @@ public class edtProfileActivity extends AppCompatActivity implements View.OnClic
 
         Toast.makeText(edtProfileActivity.this, "Saved", Toast.LENGTH_SHORT).show();
 
-        startActivity(new Intent(edtProfileActivity.this, ProfileActivity.class));
+        // ini bikin activity baru trus ke situ. harusnya, activity sekarang yang di ilangin
+        // startActivity(new Intent(edtProfileActivity.this, ProfileActivity.class));
+        // ilanginnya pake ini
+        finish();
 
     }
 
@@ -269,15 +282,25 @@ public class edtProfileActivity extends AppCompatActivity implements View.OnClic
     //Gambar
 
 
-
     @Override
     public void onClick(View view) {
-        if(view == btn_edtUser) {
+        if (view == btn_edtUser) {
             updateUser();
         }
-        if(view == btn_browseImage){
+        if (view == btn_browseImage) {
             showPopupMenuPhoto();
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
