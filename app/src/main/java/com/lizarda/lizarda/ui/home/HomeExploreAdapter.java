@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
-import com.lizarda.lizarda.model.Model;
 import com.lizarda.lizarda.R;
 import com.squareup.picasso.Picasso;
 
@@ -29,12 +28,12 @@ import static com.lizarda.lizarda.Const.NOT_SET;
  * Created by arifinfrds on 10/31/17.
  */
 
-public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.ViewHolder> {
+public class HomeExploreAdapter extends RecyclerView.Adapter<HomeExploreAdapter.ViewHolder> {
 
     private ArrayList<Product> mProducts;
     private Context mContext;
 
-    public HomeSuggestAdapter(ArrayList<Product> products, Context context) {
+    public HomeExploreAdapter(ArrayList<Product> products, Context context) {
         mProducts = products;
         mContext = context;
     }
@@ -52,7 +51,12 @@ public class HomeSuggestAdapter extends RecyclerView.Adapter<HomeSuggestAdapter.
         final Product product = mProducts.get(position);
 
         holder.mTvTitle.setText(product.getName());
-        holder.mTvHarga.setText("Rp. " + product.getPrice());
+
+        if (product.isSold()) {
+            holder.mTvHarga.setText(mContext.getResources().getString(R.string.status_sold));
+        } else {
+            holder.mTvHarga.setText("Rp. " + product.getPrice());
+        }
 
         if (product.getPhotoUrl().equalsIgnoreCase(NOT_SET)) {
             Picasso.with(mContext).load(R.drawable.no_image).into(holder.mIvThumbnail);

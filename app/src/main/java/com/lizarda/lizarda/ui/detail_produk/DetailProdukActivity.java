@@ -1,5 +1,6 @@
 package com.lizarda.lizarda.ui.detail_produk;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -8,6 +9,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,8 +27,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -50,9 +54,11 @@ import com.squareup.picasso.Picasso;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_COMMENT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_POPULARITY_COUNT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_SALDO;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
 import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
 import static com.lizarda.lizarda.Const.NOT_SET;
+import static com.lizarda.lizarda.Const.TAG.TAG_BUY_PRODUCT;
 import static com.lizarda.lizarda.Const.TAG.TAG_DETAIL_PRODUK_UI;
 
 
@@ -82,8 +88,8 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
     @BindView(R.id.tv_description_detail_produk)
     TextView mTvDeskripsiProduk;
 
-    @BindView(R.id.tv_harga_detail_produk)
-    TextView mTvHargaProduk;
+    @BindView(R.id.tv_harga_or_status_detail_produk)
+    TextView mTvHargaOrStatusProduk;
 
     @BindView(R.id.iv_produk_detail_produk)
     ImageView mIvProduk;
@@ -96,6 +102,9 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
 
     @BindView(R.id.coordinator_layout_detail_produk)
     CoordinatorLayout mCoordinatorLayout;
+
+    @BindView(R.id.btn_buy_detail_produk)
+    Button mBtnBuyProduk;
 
     private Bundle mExtras;
 
@@ -146,6 +155,7 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
         }
 
         mBtnSendComment.setOnClickListener(this);
+        mBtnBuyProduk.setOnClickListener(this);
 
         mToolbarLayout.setTitle("Green Iguana");
 
@@ -219,12 +229,22 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void updateUI(Product product, String email) {
+
+        if (product.isSold()) {
+            mTvHargaOrStatusProduk.setText(getResources().getString(R.string.status_sold));
+            mBtnBuyProduk.setVisibility(View.GONE);
+            mBtnBuyProduk.setClickable(false);
+        } else {
+            mTvHargaOrStatusProduk.setText("Rp. " + product.getPrice());
+            mBtnBuyProduk.setVisibility(View.VISIBLE);
+            mBtnBuyProduk.setClickable(true);
+        }
+
         mToolbarLayout.setTitle(product.getName());
         mTvOwnerProduk.setText(email);
         mTvNamaProduk.setText(product.getName());
         mTvJenisProduk.setText(product.getCategory());
         mTvDeskripsiProduk.setText(product.getDescription());
-        mTvHargaProduk.setText("Rp. " + product.getPrice());
 
         if (!product.getPhotoUrl().equalsIgnoreCase(NOT_SET)) {
             Picasso.with(this).load(product.getPhotoUrl()).into(mIvProduk);
@@ -266,7 +286,221 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
                 uploadComment(mEtComment.getText().toString());
             }
         }
+
+        if (id == R.id.btn_buy_detail_produk) {
+            buyProduct();
+        }
     }
+
+    private void buyProduct() {
+        AlertDialog alertDialog = new AlertDialog.Builder(DetailProdukActivity.this).create();
+        alertDialog.setTitle("Buy");
+        alertDialog.setMessage("Do you want to buy " + mProduct.getName() + " with price Rp. " + mProduct.getPrice() + " ?");
+
+        alertDialog.setButton(
+                AlertDialog.BUTTON_POSITIVE,
+                "BUY",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        handleBuyProduct(dialog);
+                        // dialog.dismiss();
+                    }
+                });
+
+        alertDialog.setButton(
+                AlertDialog.BUTTON_NEGATIVE,
+                "CANCEL",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        alertDialog.show();
+    }
+
+    private void handleBuyProduct(final DialogInterface dialog) {
+
+        // cek saldo user
+        mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                double saldo = user.getSaldo();
+
+                if (saldo < mProduct.getPrice()) {
+                    Toast.makeText(DetailProdukActivity.this, "Saldo tidak mencukupi.", Toast.LENGTH_SHORT).show();
+                } else {
+                    updateSaldoUser(dialog);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        // ubah satatus barang terjual
+        mProduct.setSold(true);
+
+
+    }
+
+    private void updateSaldoUser(final DialogInterface dialog) {
+        // update ke tabel barang tsb
+        mDatabaseRef.child(CHILD_PRODUCT).child(mProductId).setValue(mProduct)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // Toast.makeText(DetailProdukActivity.this, "Barang sukses Terjual", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG_BUY_PRODUCT, "onComplete: handleBuyProduct: mProduct.isSold(): " + mProduct.isSold());
+
+                        // update saldo user
+                        setSaldoBaruUser(dialog);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG_BUY_PRODUCT, "onFailure: handleBuyProduct: mProduct.isSold(): " + mProduct.isSold());
+                        Log.d(TAG_BUY_PRODUCT, "onFailure: handleBuyProduct: e " + e.getLocalizedMessage());
+                        Toast.makeText(DetailProdukActivity.this, "Terjadi kesalahan saat menjual product", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
+    // FIXME: 12/4/17 BUG. kepanggil terus menerus gile.!
+    private void setSaldoBaruUser(final DialogInterface dialog) {
+        // get current user saldo
+        mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final User user = dataSnapshot.getValue(User.class);
+                double saldo = user.getSaldo();
+                double newSaldo = saldo - mProduct.getPrice();
+
+                // set saldo baru
+                user.setSaldo(newSaldo);
+
+                // update saldo user skrng dengan saldo yang baru
+                mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).setValue(user)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d(TAG_BUY_PRODUCT, "onComplete: setSaldoBaruUser: user.getSaldo() : " + user.getSaldo());
+                                Toast.makeText(DetailProdukActivity.this, "Transaksi sukses", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG_BUY_PRODUCT, "onFailure: setSaldoBaruUser: e" + e.getLocalizedMessage());
+                                dialog.dismiss();
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+//    private void handleBuyProduct(final DialogInterface dialog) {
+//        // cek saldo database
+//        mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                User user = dataSnapshot.getValue(User.class);
+//                double saldo = user.getSaldo();
+//
+//                // mProduct.getPrice()
+//                if (saldo < mProduct.getPrice()) {
+//                    dialog.dismiss();
+//                    Toast.makeText(DetailProdukActivity.this, "Saldo tidak cukup", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    // coding pembelian
+//                    handleAlgoritmaPembelian(user, dialog);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+//
+//    private void handleAlgoritmaPembelian(final User user, final DialogInterface dialog) {
+//
+//        mDatabaseRef.child(CHILD_PRODUCT).child(mProductId).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Product product = dataSnapshot.getValue(Product.class);
+//
+//                // codingan untuk ubah status jual
+//                product.setSold(true);
+//
+//                double saldoBaru = user.getSaldo() - product.getPrice();
+//
+//                // update saldo
+//                user.setSaldo(saldoBaru);
+//
+//                // update database user (saldonya di update)
+//                handleUpdateDataUserWithUser(user, dialog);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Toast.makeText(DetailProdukActivity.this, "Transaksi gagal.", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
+//
+//    private void handleUpdateDataUserWithUser(User user, final DialogInterface dialog) {
+//        mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).setValue(user.getSaldo())
+//                .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//
+//                        updateOwnerIdProductWithUser(mUser, dialog);
+//
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(DetailProdukActivity.this, "Transaksi gagal.", Toast.LENGTH_SHORT).show();
+//                        dialog.dismiss();
+//                    }
+//                });
+//    }
+//
+//    private void updateOwnerIdProductWithUser(FirebaseUser mUser, final DialogInterface dialog) {
+//
+//        mProduct.setOwnerId(mUser.getUid());
+//        mDatabaseRef.child(CHILD_PRODUCT).child(mProductId).setValue(mProduct)
+//                .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        dialog.dismiss();
+//                        Toast.makeText(DetailProdukActivity.this, "Transaksi berhasil.", Toast.LENGTH_SHORT).show();
+//
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(DetailProdukActivity.this, "Transaksi gagal. Terjadi kesalahan saat update product owner.", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//    }
 
     private void setupFirebase() {
         mAuth = FirebaseAuth.getInstance();

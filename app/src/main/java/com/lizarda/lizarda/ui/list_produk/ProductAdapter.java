@@ -50,6 +50,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.mTvTitle.setText(product.getName());
         holder.mTvContent.setText("Rp. " + product.getPrice());
 
+        if (product.isSold()) {
+            holder.mTvContent.setText(mContext.getResources().getString(R.string.status_sold));
+        } else {
+            holder.mTvContent.setText("Rp. " + product.getPrice());
+        }
+
         if (product.getPhotoUrl().equalsIgnoreCase(NOT_SET)) {
             Picasso.with(mContext).load(R.drawable.no_image).into(holder.mIvThumbnail);
         } else {

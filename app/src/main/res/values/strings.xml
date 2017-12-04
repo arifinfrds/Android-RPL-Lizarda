@@ -67,6 +67,8 @@
     <string name="title_activity_add_product">Add Product</string>
     <string name="uploading">Uploading ...</string>
 
+    <string name="status_sold">Sold</string>
+
     <string-array name="item_spinner_jenis_produk">
         <item>Bunglon</item>
         <item>Ular</item>
