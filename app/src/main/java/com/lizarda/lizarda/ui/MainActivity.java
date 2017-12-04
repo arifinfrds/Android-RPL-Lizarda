@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity
         // check current user in db
 
         // TODO: 12/4/17 Fix cek database user waktu pertama kali daftar later.
- 
+
 //        if (!isUserExistInDatabase(mUser.getUid())) {
 //            createUser();
 //        } else {
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity
         // navHeaderView= navigationView.inflateHeaderView(R.layout.nav_header_main);
         // tvHeaderName= (TextView) navHeaderView.findViewById(R.id.tvHeaderName);
         // tvHeaderName.setText("Saly");
- 
+
     }
 
     private boolean isUserExistInDatabase(String uid) {
@@ -175,15 +175,14 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-
-        handleSearchView(menu);
-
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        handleSearchView(menu);
+//
+//        return true;
+//    }
 
     private void handleSearchView(Menu menu) {
         // Associate searchable configuration with the SearchView
@@ -264,8 +263,12 @@ public class MainActivity extends AppCompatActivity
 
                         Product product = productDataSnapshot.getValue(Product.class);
 
-                        if (product.getName().toLowerCase().contains(query.toLowerCase())
-                                || product.getCategory().toLowerCase().contains(query.toLowerCase())) {
+//                        boolean condition = product.getName().toLowerCase().contains(query.toLowerCase())
+//                                || product.getCategory().toLowerCase().contains(query.toLowerCase());
+
+                        boolean condition = product.getCategory().toLowerCase().contains(query.toLowerCase());
+
+                        if (condition) {
                             // Log.d(TAG_SEARCH, "onDataChange: query: " + query + " product.getName(): " + product.getName());
                             mProductsId.add(product.getId());
                         } else {
@@ -323,8 +326,6 @@ public class MainActivity extends AppCompatActivity
             logout();
         } else if (id == R.id.nav_browse) {
             displayView(id);
-        } else if (id == R.id.nav_settings) {
-            displayView(id);
         } else if (id == R.id.nav_profile) {
             displayView(id);
         }
@@ -347,10 +348,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_browse:
                 title = getResources().getString(R.string.title_home);
                 fragment = new HomeFragment();
-                break;
-            case R.id.nav_settings:
-                title = getResources().getString(R.string.title_settings);
-                // fragment = new AboutUsFragment();
                 break;
             case R.id.nav_profile:
                 navigateToProfileActivity();

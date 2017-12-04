@@ -68,8 +68,8 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
         setSupportActionBar(toolbar);
 
         mActionBar = getSupportActionBar();
-            if (mActionBar != null) {
-                mActionBar.setDisplayHomeAsUpEnabled(true);
+        if (mActionBar != null) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         ButterKnife.bind(this);
@@ -130,6 +130,8 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
                         Product product = productDataSnapshot.getValue(Product.class);
                         // cek jika id product ada di list
                         mProducts.add(product);
+
+//                          setupRecyclerView();
 //                    for (String productId : arrayListProductIdKey) {
 //                        if (product.getId().equals(productId)) {
 //                            // Log.d(TAG_SEARCH, "onDataChange: product.getId(): " + product.getId());
@@ -151,6 +153,22 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
 //                            Log.d(TAG_SEARCH, "onDataChange: Product: " + product.getId());
 //                        }
                     }
+
+//                    if (!mProducts.isEmpty()) {
+//                        mProducts.clear();
+//                    }
+//                    for (int i = 0; i < mProducts.size(); i++) {
+//                        for (int j = 0; j < arrayListProductIdKey.size(); j++) {
+//                            if (arrayListProductIdKey.get(j).equals(mProducts.get(i).getId())) {
+//                                mProducts.add(mProducts.get(i));
+//                            } else {
+//                                Toast.makeText(ProductListActivity.this, "not equal", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    }
+//
+//                    setupRecyclerView();
+
                     // FIXME: 11/26/17 BINGUNG!
 //                    for (int i = 0; i < mProducts.size(); i++) {
 //                        for (int j = 0; j < arrayListProductIdKey.size(); j++) {
