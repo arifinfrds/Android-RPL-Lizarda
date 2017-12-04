@@ -102,24 +102,26 @@ public class MainActivity extends AppCompatActivity
         mProductsId = new ArrayList<>();
 
         // check current user in db
- edtProfile
+
+        // TODO: 12/4/17 Fix cek database user waktu pertama kali daftar later.
+ 
 //        if (!isUserExistInDatabase(mUser.getUid())) {
 //            createUser();
 //        } else {
 //            Toast.makeText(this, "Database user sudah ada.", Toast.LENGTH_SHORT).show();
 //        }
 
-        if (!isUserExistInDatabase(mUser.getUid())) {
-            createUser();
-        } else {
-            Toast.makeText(this, "Database user sudah ada.", Toast.LENGTH_SHORT).show();
-        }
+//        if (!isUserExistInDatabase(mUser.getUid())) {
+//            createUser();
+//        } else {
+//            Toast.makeText(this, "Database user sudah ada.", Toast.LENGTH_SHORT).show();
+//        }
 
 
         // navHeaderView= navigationView.inflateHeaderView(R.layout.nav_header_main);
         // tvHeaderName= (TextView) navHeaderView.findViewById(R.id.tvHeaderName);
         // tvHeaderName.setText("Saly");
- master
+ 
     }
 
     private boolean isUserExistInDatabase(String uid) {
