@@ -37,6 +37,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Comment;
@@ -323,24 +324,25 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
     private void handleBuyProduct(final DialogInterface dialog) {
 
         // cek saldo user
-        mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                double saldo = user.getSaldo();
+        mDatabaseRef.child(CHILD_USER).child(mUser.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        double saldo = user.getSaldo();
 
-                if (saldo < mProduct.getPrice()) {
-                    Toast.makeText(DetailProdukActivity.this, "Saldo tidak mencukupi.", Toast.LENGTH_SHORT).show();
-                } else {
-                    updateSaldoUser(dialog);
-                }
-            }
+                        if (saldo < mProduct.getPrice()) {
+                            Toast.makeText(DetailProdukActivity.this, "Saldo tidak mencukupi.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            updateSaldoUser(dialog);
+                        }
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                    }
+                });
 
         // ubah satatus barang terjual
         mProduct.setSold(true);
@@ -375,40 +377,41 @@ public class DetailProdukActivity extends AppCompatActivity implements View.OnCl
     // FIXME: 12/4/17 BUG. kepanggil terus menerus gile.!
     private void setSaldoBaruUser(final DialogInterface dialog) {
         // get current user saldo
-        mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                final User user = dataSnapshot.getValue(User.class);
-                double saldo = user.getSaldo();
-                double newSaldo = saldo - mProduct.getPrice();
+        mDatabaseRef.child(CHILD_USER).child(mUser.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        final User user = dataSnapshot.getValue(User.class);
+                        double saldo = user.getSaldo();
+                        double newSaldo = saldo - mProduct.getPrice();
 
-                // set saldo baru
-                user.setSaldo(newSaldo);
+                        // set saldo baru
+                        user.setSaldo(newSaldo);
 
-                // update saldo user skrng dengan saldo yang baru
-                mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).setValue(user)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.d(TAG_BUY_PRODUCT, "onComplete: setSaldoBaruUser: user.getSaldo() : " + user.getSaldo());
-                                Toast.makeText(DetailProdukActivity.this, "Transaksi sukses", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG_BUY_PRODUCT, "onFailure: setSaldoBaruUser: e" + e.getLocalizedMessage());
-                                dialog.dismiss();
-                            }
-                        });
-            }
+                        // update saldo user skrng dengan saldo yang baru
+                        mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).setValue(user)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Log.d(TAG_BUY_PRODUCT, "onComplete: setSaldoBaruUser: user.getSaldo() : " + user.getSaldo());
+                                        Toast.makeText(DetailProdukActivity.this, "Transaksi sukses", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d(TAG_BUY_PRODUCT, "onFailure: setSaldoBaruUser: e" + e.getLocalizedMessage());
+                                        dialog.dismiss();
+                                    }
+                                });
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                    }
+                });
     }
 
 
