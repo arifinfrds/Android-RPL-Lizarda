@@ -1,16 +1,13 @@
 package com.lizarda.lizarda.ui.profile;
 
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,11 +21,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.User;
 import com.lizarda.lizarda.ui.add_product.AddProductActivity;
-
-import java.util.ArrayList;
-import java.util.Map;
-
-import static com.lizarda.lizarda.model.User.*;
 
 
 public class ProfileActivity extends AppCompatActivity {
@@ -60,14 +52,6 @@ public class ProfileActivity extends AppCompatActivity {
         userID = user.getUid();
 
         txtEmail.setText(user.getEmail());
-
-        FloatingActionButton fabEdit = findViewById(R.id.fab2);
-        fabEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navigateToEditUser();
-            }
-        });
 
 
         ActionBar actionBar = getSupportActionBar();
@@ -102,8 +86,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     //blum selesaiboi
-    private void navigateToEditUser(){
-        Toast.makeText(this, "mantap",Toast.LENGTH_SHORT).show();
+    private void navigateToEditUser() {
+        Toast.makeText(this, "mantap", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, edtProfileActivity.class);
         startActivity(intent);
     }
@@ -114,6 +98,12 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -122,7 +112,11 @@ public class ProfileActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.action_edit_profile:
+                navigateToEditUser();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

@@ -68,6 +68,7 @@
     <string name="uploading">Uploading ...</string>
 
     <string name="status_sold">Sold</string>
+    <string name="action_edit">Edit</string>
 
     <string-array name="item_spinner_jenis_produk">
         <item>Bunglon</item>

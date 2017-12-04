@@ -68,8 +68,8 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
         setSupportActionBar(toolbar);
 
         mActionBar = getSupportActionBar();
-        if (mActionBar != null) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
+            if (mActionBar != null) {
+                mActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         ButterKnife.bind(this);

@@ -202,10 +202,10 @@
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
                 android:text="Description"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                android:paddingBottom="10dp"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txt_deskripsi"
@@ -224,16 +224,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_action_add" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@+id/appBarLayout"
-        app:layout_anchorGravity="right|top"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
 
 </android.support.design.widget.CoordinatorLayout>
 
