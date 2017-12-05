@@ -146,6 +146,21 @@ public class MainActivity extends AppCompatActivity
                         Picasso.with(getApplicationContext()).load(user.getPhotoUrl()).into(mIvProfile);
                     }
                 }
+
+                if (user.getPhotoUrl() != null) {
+                    if (user.getPhotoUrl().equals("")
+                            || user.getPhotoUrl().equalsIgnoreCase(NOT_SET)
+                            || user.getPhotoUrl().contains(NOT_SET)) {
+                        Picasso.with(getApplicationContext()).load(R.drawable.profile_thumbnail)
+                                .into(mIvProfile);
+                    } else {
+                        Picasso.with(getApplicationContext()).load(user.getPhotoUrl())
+                                .into(mIvProfile);
+                    }
+                } else {
+                    Picasso.with(getApplicationContext()).load(R.drawable.profile_thumbnail)
+                            .into(mIvProfile);
+                }
             }
 
             @Override
