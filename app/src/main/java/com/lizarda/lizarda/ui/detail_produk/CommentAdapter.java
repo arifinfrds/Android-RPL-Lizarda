@@ -16,6 +16,7 @@ import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Comment;
 import com.lizarda.lizarda.model.Model;
 import com.lizarda.lizarda.model.User;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,7 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
+import static com.lizarda.lizarda.Const.NOT_SET;
 
 
 /**
@@ -61,6 +63,21 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
                         holder.mTvUsername.setText(user.getEmail());
+
+                        if (user.getPhotoUrl() != null) {
+                            if (user.getPhotoUrl().equals("")
+                                    || user.getPhotoUrl().equalsIgnoreCase(NOT_SET)
+                                    || user.getPhotoUrl().contains(NOT_SET)) {
+                                Picasso.with(mContext).load(R.drawable.profile_thumbnail)
+                                        .resize(24, 24).into(holder.mCivProfile);
+                            } else {
+                                Picasso.with(mContext).load(user.getPhotoUrl())
+                                        .resize(24, 24).into(holder.mCivProfile);
+                            }
+                        } else {
+                            Picasso.with(mContext).load(R.drawable.profile_thumbnail)
+                                    .resize(24, 24).into(holder.mCivProfile);
+                        }
                     }
 
                     @Override
