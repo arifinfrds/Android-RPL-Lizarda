@@ -40,10 +40,10 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        txtNama = (TextView) findViewById(R.id.txt_nama);
+        txtNama = (TextView) findViewById(R.id.tv_nama_home);
         txtAlamat = (TextView) findViewById(R.id.txt_alamat);
         txtDeskripsi = (TextView) findViewById(R.id.txt_deskripsi);
-        txtEmail = (TextView) findViewById(R.id.txt_email);
+        txtEmail = (TextView) findViewById(R.id.tv_email_home);
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();

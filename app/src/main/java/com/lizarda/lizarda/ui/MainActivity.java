@@ -3,6 +3,7 @@ package com.lizarda.lizarda.ui;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -23,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +44,7 @@ import com.lizarda.lizarda.ui.list_produk.ProductListActivity;
 import com.lizarda.lizarda.ui.profile.ProfileActivity;
 import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
 import com.lizarda.lizarda.ui.home.HomeFragment;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -64,6 +67,10 @@ public class MainActivity extends AppCompatActivity
 
     private ArrayList<String> mProductsId;
 
+    ImageView mIvProfile;
+    TextView mTvNamaUser;
+    TextView mTvEmailUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,15 +78,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        fab.setVisibility(View.GONE);
+
+        setupFirebase();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -90,6 +90,15 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View header = navigationView.getHeaderView(0);
+        mIvProfile = (ImageView) header.findViewById(R.id.iv_profile_home);
+        mTvNamaUser = ((TextView) header.findViewById(R.id.tv_nama_home));
+        mTvEmailUser = ((TextView) header.findViewById(R.id.tv_email_home));
+
+        // fetch user
+        fetchUser();
+
+
         getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
 
         // show default fragment
@@ -97,7 +106,6 @@ public class MainActivity extends AppCompatActivity
         ft.replace(R.id.content_main, new HomeFragment());
         ft.commit();
 
-        setupFirebase();
 
         mProductsId = new ArrayList<>();
 
@@ -122,6 +130,29 @@ public class MainActivity extends AppCompatActivity
         // tvHeaderName= (TextView) navHeaderView.findViewById(R.id.tvHeaderName);
         // tvHeaderName.setText("Saly");
 
+    }
+
+    private void fetchUser() {
+        mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+
+                mTvEmailUser.setText(mUser.getEmail());
+                mTvNamaUser.setText(user.getNama());
+
+                if (user.getPhotoUrl() != null) {
+                    if (!user.getPhotoUrl().equals("") || !user.getPhotoUrl().equals(NOT_SET)) {
+                        Picasso.with(getApplicationContext()).load(user.getPhotoUrl()).into(mIvProfile);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private boolean isUserExistInDatabase(String uid) {
