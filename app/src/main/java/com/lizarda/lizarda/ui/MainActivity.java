@@ -141,11 +141,6 @@ public class MainActivity extends AppCompatActivity
                 mTvEmailUser.setText(mUser.getEmail());
                 mTvNamaUser.setText(user.getNama());
 
-                if (user.getPhotoUrl() != null) {
-                    if (!user.getPhotoUrl().equals("") || !user.getPhotoUrl().equals(NOT_SET)) {
-                        Picasso.with(getApplicationContext()).load(user.getPhotoUrl()).into(mIvProfile);
-                    }
-                }
 
                 if (user.getPhotoUrl() != null) {
                     if (user.getPhotoUrl().equals("")

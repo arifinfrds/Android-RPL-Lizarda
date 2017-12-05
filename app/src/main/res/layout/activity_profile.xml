@@ -41,9 +41,10 @@
                 android:padding="16dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_thumbnail_profile"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/lasem"
+                    android:src="@drawable/profile_thumbnail"
                     app:civ_border_color="@android:color/white"
                     app:civ_border_width="4dp" />
 
@@ -107,52 +108,11 @@
                 android:rowCount="2">
 
                 <TextView
+                    android:id="@+id/tv_saldo_profile"
                     android:layout_gravity="center"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:text="300"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:text="250"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:text="500"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:text="Following"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:text="Followers"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:text="Likes"
+                    android:text="Saldo : Rp. 50000"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />

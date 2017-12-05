@@ -21,6 +21,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.User;
 import com.lizarda.lizarda.ui.add_product.AddProductActivity;
+import com.squareup.picasso.Picasso;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.lizarda.lizarda.Const.NOT_SET;
 
 
 public class ProfileActivity extends AppCompatActivity {
@@ -35,6 +42,12 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myref;
 
+    @BindView(R.id.iv_thumbnail_profile)
+    CircleImageView mCivThumbnail;
+
+    @BindView(R.id.tv_saldo_profile)
+    TextView mTvSaldo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +57,8 @@ public class ProfileActivity extends AppCompatActivity {
         txtAlamat = (TextView) findViewById(R.id.txt_alamat);
         txtDeskripsi = (TextView) findViewById(R.id.txt_deskripsi);
         txtEmail = (TextView) findViewById(R.id.tv_email_home);
+
+        ButterKnife.bind(this);
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -75,6 +90,24 @@ public class ProfileActivity extends AppCompatActivity {
                 txtNama.setText(dataSnapshot.child(userID).getValue(User.class).getNama());
                 txtAlamat.setText(dataSnapshot.child(userID).getValue(User.class).getAlamat());
                 txtDeskripsi.setText(dataSnapshot.child(userID).getValue(User.class).getDeskripsi());
+
+                mTvSaldo.setText("Saldo : Rp. " + dataSnapshot.child(userID).getValue(User.class).getSaldo());
+
+                if (dataSnapshot.child(userID).getValue(User.class).getPhotoUrl() != null) {
+                    if (dataSnapshot.child(userID).getValue(User.class).getPhotoUrl().equals("")
+                            || dataSnapshot.child(userID).getValue(User.class).getPhotoUrl().equalsIgnoreCase(NOT_SET)
+                            || dataSnapshot.child(userID).getValue(User.class).getPhotoUrl().contains(NOT_SET)) {
+                        Picasso.with(getApplicationContext()).load(R.drawable.profile_thumbnail)
+                                .into(mCivThumbnail);
+                    } else {
+                        Picasso.with(getApplicationContext())
+                                .load(dataSnapshot.child(userID).getValue(User.class).getPhotoUrl())
+                                .into(mCivThumbnail);
+                    }
+                } else {
+                    Picasso.with(getApplicationContext()).load(R.drawable.profile_thumbnail)
+                            .into(mCivThumbnail);
+                }
             }
 
             @Override
