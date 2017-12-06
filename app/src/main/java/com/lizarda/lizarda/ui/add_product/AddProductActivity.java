@@ -349,6 +349,10 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         String hargaStr = mEtHargaProduct.getText().toString();
         double harga = Double.parseDouble(hargaStr);
 
+        if (mImageDownloadUrl == null) {
+            mImageDownloadUrl = NOT_SET;
+        }
+
         String productId = mDatabaseRef.push().getKey();
         Product product = new Product(
                 productId,
