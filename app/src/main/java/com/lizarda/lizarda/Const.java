@@ -30,6 +30,8 @@ public interface Const {
         String TAG_DETAIL_PRODUK_UI = "TAG_DETAIL_PRODUK_UI";
 
         String TAG_BUY_PRODUCT = "TAG_BUY_PRODUCT";
+
+        String TAG_UPLOAD_PRODUCT = "TAG_UPLOAD_PRODUCT";
     }
 
     interface FIREBASE {

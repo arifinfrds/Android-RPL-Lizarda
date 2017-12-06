@@ -1,4 +1,4 @@
-package com.lizarda.lizarda.model;
+package com.lizarda.lizarda.model.deprecated;
 
 /**
  * Created by arifinfrds on 11/20/17.

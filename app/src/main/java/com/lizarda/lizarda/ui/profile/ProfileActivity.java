@@ -58,6 +58,8 @@ public class ProfileActivity extends AppCompatActivity {
         txtDeskripsi = (TextView) findViewById(R.id.txt_deskripsi);
         txtEmail = (TextView) findViewById(R.id.tv_email_home);
 
+        setTitle("Profile");
+
         ButterKnife.bind(this);
 
         mAuth = FirebaseAuth.getInstance();
