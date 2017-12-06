@@ -22,8 +22,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.lizarda.lizarda.model.Kategori;
-import com.lizarda.lizarda.model.Model;
+import com.lizarda.lizarda.model.ui_model.Kategori;
+import com.lizarda.lizarda.model.deprecated.Model;
 import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.ui.list_produk.ProductListActivity;
@@ -357,7 +357,8 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
         reverseHorizontalLayout.setReverseLayout(true);
         reverseHorizontalLayout.setStackFromEnd(true);
 
-        if (recyclerView.getId() == R.id.rv_popular_home) {
+        if (recyclerView.getId() == R.id.rv_popular_home
+                || recyclerView.getId() == R.id.rv_new_listing_home) {
             recyclerView.setLayoutManager(reverseHorizontalLayout);
         } else {
             recyclerView.setLayoutManager(defaultHorizontalLayout);

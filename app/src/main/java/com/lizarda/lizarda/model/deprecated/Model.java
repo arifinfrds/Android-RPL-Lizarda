@@ -1,4 +1,4 @@
-package com.lizarda.lizarda.model;
+package com.lizarda.lizarda.model.deprecated;
 
 import java.util.ArrayList;
 

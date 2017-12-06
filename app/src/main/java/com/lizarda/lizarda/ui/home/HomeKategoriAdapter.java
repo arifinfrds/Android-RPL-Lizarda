@@ -9,12 +9,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.lizarda.lizarda.Const;
-import com.lizarda.lizarda.model.Kategori;
+import com.lizarda.lizarda.model.ui_model.Kategori;
 import com.lizarda.lizarda.R;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 

@@ -73,6 +73,8 @@ public class edtProfileActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edt_profile);
 
+        setTitle("Edit Profile");
+
         mActionBar = getSupportActionBar();
         if (mActionBar != null) {
             mActionBar.setDisplayHomeAsUpEnabled(true);

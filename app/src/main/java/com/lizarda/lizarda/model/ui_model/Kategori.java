@@ -1,4 +1,4 @@
-package com.lizarda.lizarda.model;
+package com.lizarda.lizarda.model.ui_model;
 
 import com.lizarda.lizarda.R;
 

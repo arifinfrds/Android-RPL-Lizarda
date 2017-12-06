@@ -59,6 +59,7 @@ import static com.lizarda.lizarda.Const.FIREBASE.PRODUCT_DEFAULT_POPULARITY_COUN
 import static com.lizarda.lizarda.Const.NOT_SET;
 import static com.lizarda.lizarda.Const.TAG.DOWNLOAD_IMAGE;
 import static com.lizarda.lizarda.Const.TAG.SPINNER_KATEGORI;
+import static com.lizarda.lizarda.Const.TAG.TAG_UPLOAD_PRODUCT;
 import static com.lizarda.lizarda.Const.TAG.URI;
 
 public class AddProductActivity extends AppCompatActivity implements View.OnClickListener {
@@ -372,6 +373,7 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         toast("Terjadi kesalahan. Gagal tambah produk Anda.");
+                        Log.d(TAG_UPLOAD_PRODUCT, "onFailure: e: " + e.getLocalizedMessage());
                     }
                 });
     }
