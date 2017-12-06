@@ -28,8 +28,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.lizarda.lizarda.R;
@@ -43,6 +47,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
 import static com.lizarda.lizarda.Const.TAG.DOWNLOAD_IMAGE;
 import static com.lizarda.lizarda.Const.TAG.URI;
 
@@ -83,6 +88,7 @@ public class edtProfileActivity extends AppCompatActivity implements View.OnClic
         firebaseAuth = FirebaseAuth.getInstance();
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        mStorageRef1 = FirebaseStorage.getInstance().getReference();
 
         input_nama = (EditText) findViewById(R.id.input_nama);
         input_alamat = (EditText) findViewById(R.id.input_alamat);
@@ -94,28 +100,49 @@ public class edtProfileActivity extends AppCompatActivity implements View.OnClic
         btn_browseImage.setOnClickListener(this);
 
         mIvProduct = (ImageView) findViewById(R.id.img_user);
+
+
     }
 
     private void updateUser() {
-        String nama = input_nama.getText().toString();
-        String alamat = input_alamat.getText().toString();
-        String deskripsi = input_deskripsi.getText().toString();
 
-        FirebaseUser user = firebaseAuth.getCurrentUser();
+        // fetch saldo yang lama dulu
+        String idUser = firebaseAuth.getCurrentUser().getUid();
+        databaseReference.child(CHILD_USER).child(idUser).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
 
-        User userUpdate = new User();
-        userUpdate.setNama(nama);
-        userUpdate.setAlamat(alamat);
-        userUpdate.setDeskripsi(deskripsi);
+                String nama = input_nama.getText().toString();
+                String alamat = input_alamat.getText().toString();
+                String deskripsi = input_deskripsi.getText().toString();
 
-        databaseReference.child("User").child(user.getUid()).setValue(userUpdate);
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
-        Toast.makeText(edtProfileActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                User userUpdate = new User();
+                userUpdate.setNama(nama);
+                userUpdate.setAlamat(alamat);
+                userUpdate.setDeskripsi(deskripsi);
+                userUpdate.setEmail(firebaseUser.getEmail());
+                userUpdate.setSaldo(user.getSaldo());
+                userUpdate.setPhotoUrl(mImageDownloadUrl1);
 
-        // ini bikin activity baru trus ke situ. harusnya, activity sekarang yang di ilangin
-        // startActivity(new Intent(edtProfileActivity.this, ProfileActivity.class));
-        // ilanginnya pake ini
-        finish();
+                databaseReference.child("User").child(firebaseUser.getUid()).setValue(userUpdate);
+
+                Toast.makeText(edtProfileActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+
+                // ini bikin activity baru trus ke situ. harusnya, activity sekarang yang di ilangin
+                // startActivity(new Intent(edtProfileActivity.this, ProfileActivity.class));
+                // ilanginnya pake ini
+                finish();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
     }
 

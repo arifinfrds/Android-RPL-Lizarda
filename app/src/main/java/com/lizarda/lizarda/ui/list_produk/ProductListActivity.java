@@ -33,7 +33,6 @@ import static com.lizarda.lizarda.Const.FIREBASE.CHILD_POPULARITY_COUNT;
 import static com.lizarda.lizarda.Const.KEY_ARRAY_LIST_PRODUCT_ID;
 import static com.lizarda.lizarda.Const.KEY_BUTTON_ID;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
-import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_NEW_LISTING;
 import static com.lizarda.lizarda.Const.KEY_KATEGORI;
 import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
 import static com.lizarda.lizarda.Const.TAG.TAG_POPULAR;
@@ -273,7 +272,7 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
     }
 
     private void fetchNewListing() {
-        mDatabaseRef.child(CHILD_PRODUCT).limitToLast(LIMIT_NEW_LISTING).addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.child(CHILD_PRODUCT).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!mProducts.isEmpty()) {
@@ -324,7 +323,8 @@ public class ProductListActivity extends AppCompatActivity implements ListProduk
         reverseHorizontalLayout.setReverseLayout(true);
         reverseHorizontalLayout.setStackFromEnd(true);
 
-        if (mButtonMoreId == R.id.btn_more_popular_home) {
+        if (mButtonMoreId == R.id.btn_more_popular_home
+                || mButtonMoreId == R.id.btn_more_new_listing_home) {
             mRecyclerView.setLayoutManager(reverseHorizontalLayout);
         } else {
             mRecyclerView.setLayoutManager(defaultHorizontalLayout);
