@@ -111,7 +111,8 @@ public class MainActivity extends AppCompatActivity
 
         // check current user in db
 
-        // TODO: 12/4/17 Fix cek database user waktu pertama kali daftar later.
+        // TODO: 12/4/17 Fix cek database user waktu pertama kali daftar later. 
+        // TODO: 12/6/17 fix in malem atau sore 
 
 //        if (!isUserExistInDatabase(mUser.getUid())) {
 //            createUser();
@@ -139,8 +140,11 @@ public class MainActivity extends AppCompatActivity
                 User user = dataSnapshot.getValue(User.class);
 
                 mTvEmailUser.setText(mUser.getEmail());
-                mTvNamaUser.setText(user.getNama());
-
+                if (user.getNama() != null) {
+                    mTvNamaUser.setText(user.getNama());
+                } else {
+                    mTvNamaUser.setText(user.getNama());
+                }
 
                 if (user.getPhotoUrl() != null) {
                     if (user.getPhotoUrl().equals("")
