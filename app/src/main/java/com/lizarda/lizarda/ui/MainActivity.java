@@ -40,6 +40,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.model.User;
+import com.lizarda.lizarda.ui.admin.AdminActivity;
+import com.lizarda.lizarda.ui.admin.AdminAdapter;
 import com.lizarda.lizarda.ui.list_produk.ProductListActivity;
 import com.lizarda.lizarda.ui.profile.ProfileActivity;
 import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
@@ -131,7 +133,15 @@ public class MainActivity extends AppCompatActivity
         // tvHeaderName= (TextView) navHeaderView.findViewById(R.id.tvHeaderName);
         // tvHeaderName.setText("Saly");
 
+        navigateToAdminActivity();
+
     }
+
+    private void navigateToAdminActivity() {
+        Intent intent = new Intent(this, AdminActivity.class);
+        startActivity(intent);
+    }
+
 
     private void fetchUser() {
         mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
@@ -353,8 +363,6 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
             Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
-
-
             return true;
         }
 
