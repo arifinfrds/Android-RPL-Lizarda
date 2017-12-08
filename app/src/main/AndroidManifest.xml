@@ -43,7 +43,11 @@
             android:name=".ui.add_product.AddProductActivity"
             android:label="@string/title_activity_add_product"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.profile.edtProfileActivity"></activity>
+        <activity android:name=".ui.profile.edtProfileActivity" />
+        <activity
+            android:name=".ui.admin.AdminActivity"
+            android:label="@string/title_activity_admin"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
