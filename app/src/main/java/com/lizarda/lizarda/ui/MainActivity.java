@@ -128,13 +128,51 @@ public class MainActivity extends AppCompatActivity
 //            Toast.makeText(this, "Database user sudah ada.", Toast.LENGTH_SHORT).show();
 //        }
 
+        checkIfUserExistInDatabase();
 
-        // navHeaderView= navigationView.inflateHeaderView(R.layout.nav_header_main);
-        // tvHeaderName= (TextView) navHeaderView.findViewById(R.id.tvHeaderName);
-        // tvHeaderName.setText("Saly");
 
-        navigateToAdminActivity();
+        fetchStatusAdmin();
 
+    }
+
+    private void checkIfUserExistInDatabase() {
+        mDatabaseRef.child(CHILD_USER).child(mUser.getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (!dataSnapshot.exists()) {
+                            createUser();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void fetchStatusAdmin() {
+        mDatabaseRef.child(CHILD_USER).child(mUser.getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            User user = dataSnapshot.getValue(User.class);
+
+                            if (user.isAdmin()) {
+                                Toast.makeText(MainActivity.this, "Hello Admin!", Toast.LENGTH_SHORT).show();
+                                navigateToAdminActivity();
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     private void navigateToAdminActivity() {
@@ -149,27 +187,33 @@ public class MainActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
 
-                mTvEmailUser.setText(mUser.getEmail());
-                if (user.getNama() != null) {
-                    mTvNamaUser.setText(user.getNama());
-                } else {
-                    mTvNamaUser.setText(user.getNama());
-                }
+                if (user != null) {
 
-                if (user.getPhotoUrl() != null) {
-                    if (user.getPhotoUrl().equals("")
-                            || user.getPhotoUrl().equalsIgnoreCase(NOT_SET)
-                            || user.getPhotoUrl().contains(NOT_SET)) {
+                    mTvEmailUser.setText(mUser.getEmail());
+                    if (user.getNama() != null) {
+                        mTvNamaUser.setText(user.getNama());
+                    } else {
+                        mTvNamaUser.setText(user.getNama());
+                    }
+
+                    if (user.getPhotoUrl() != null) {
+                        if (user.getPhotoUrl().equals("")
+                                || user.getPhotoUrl().equalsIgnoreCase(NOT_SET)
+                                || user.getPhotoUrl().contains(NOT_SET)) {
+                            Picasso.with(getApplicationContext()).load(R.drawable.profile_thumbnail)
+                                    .into(mIvProfile);
+                        } else {
+                            Picasso.with(getApplicationContext()).load(user.getPhotoUrl())
+                                    .into(mIvProfile);
+                        }
+                    } else {
                         Picasso.with(getApplicationContext()).load(R.drawable.profile_thumbnail)
                                 .into(mIvProfile);
-                    } else {
-                        Picasso.with(getApplicationContext()).load(user.getPhotoUrl())
-                                .into(mIvProfile);
                     }
-                } else {
-                    Picasso.with(getApplicationContext()).load(R.drawable.profile_thumbnail)
-                            .into(mIvProfile);
+
                 }
+
+
             }
 
             @Override
@@ -195,23 +239,32 @@ public class MainActivity extends AppCompatActivity
         return isExist[0];
     }
 
-//    private void createUser() {
-//        User user = new User(mUser.getUid(), mUser.getEmail(), NOT_SET, NOT_SET, false, 500000);
-//
-//        mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).setValue(user)
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Toast.makeText(MainActivity.this, "Database user sukses terbuat.", Toast.LENGTH_SHORT).show();
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(MainActivity.this, "Database user gagal terbuat.", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//    }
+    private void createUser() {
+        User user = new User(
+                mUser.getUid(),
+                mUser.getEmail(),
+                NOT_SET,
+                NOT_SET,
+                NOT_SET,
+                NOT_SET,
+                false,
+                10000000
+        );
+
+        mDatabaseRef.child(CHILD_USER).child(mUser.getUid()).setValue(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(MainActivity.this, "Database user sukses terbuat.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.this, "Database user gagal terbuat.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
     private void setupFirebase() {
         mAuth = FirebaseAuth.getInstance();

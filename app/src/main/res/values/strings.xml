@@ -77,4 +77,5 @@
         <item>Kura-kura</item>
     </string-array>
     <string name="title_activity_admin">Admin - Product List</string>
+    <string name="action_more">more</string>
 </resources>
