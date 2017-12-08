@@ -5,6 +5,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,14 +22,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lizarda.lizarda.R;
+import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.model.User;
 import com.lizarda.lizarda.ui.add_product.AddProductActivity;
+import com.lizarda.lizarda.ui.admin.AdminAdapter;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.NOT_SET;
 
 
@@ -41,12 +49,21 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myref;
+    private DatabaseReference mDatabaseRef;
+    private FirebaseUser mUser;
 
     @BindView(R.id.iv_thumbnail_profile)
     CircleImageView mCivThumbnail;
 
     @BindView(R.id.tv_saldo_profile)
     TextView mTvSaldo;
+
+    @BindView(R.id.rv_product_profile)
+    RecyclerView mRvProduct;
+
+    private ArrayList<Product> mProducts;
+    private ProfileProductAdapter mAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +79,16 @@ public class ProfileActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        mProducts = new ArrayList<>();
+
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myref = mFirebaseDatabase.getReference("User");
-        FirebaseUser user = mAuth.getCurrentUser();
-        userID = user.getUid();
+        mUser = mAuth.getCurrentUser();
+        userID = mUser.getUid();
+        mDatabaseRef = mFirebaseDatabase.getReference();
 
-        txtEmail.setText(user.getEmail());
+        txtEmail.setText(mUser.getEmail());
 
 
         ActionBar actionBar = getSupportActionBar();
@@ -118,6 +138,50 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        fetchProduct();
+
+    }
+
+
+    private void fetchProduct() {
+        mDatabaseRef.child(CHILD_PRODUCT).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.exists()) {
+
+                    for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+                        Product product = productDataSnapshot.getValue(Product.class);
+
+                        if (product.getOwnerId().equals(mUser.getUid())) {
+                            mProducts.add(product);
+                        }
+
+                    }
+                    setupRecyclerView();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void setupRecyclerView() {
+
+        mRvProduct.setLayoutManager(
+                new GridLayoutManager(
+                        this,
+                        2
+                )
+        );
+        mRvProduct.setNestedScrollingEnabled(false);
+
+        mAdapter = new ProfileProductAdapter(mProducts, this);
+        mRvProduct.setAdapter(mAdapter);
     }
 
     //blum selesaiboi

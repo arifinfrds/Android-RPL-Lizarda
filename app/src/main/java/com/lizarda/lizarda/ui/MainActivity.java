@@ -69,9 +69,9 @@ public class MainActivity extends AppCompatActivity
 
     private ArrayList<String> mProductsId;
 
-    ImageView mIvProfile;
-    TextView mTvNamaUser;
-    TextView mTvEmailUser;
+    private ImageView mIvProfile;
+    private TextView mTvNamaUser;
+    private TextView mTvEmailUser;
 
 
     @Override
@@ -112,24 +112,7 @@ public class MainActivity extends AppCompatActivity
         mProductsId = new ArrayList<>();
 
         // check current user in db
-
-        // TODO: 12/4/17 Fix cek database user waktu pertama kali daftar later. 
-        // TODO: 12/6/17 fix in malem atau sore 
-
-//        if (!isUserExistInDatabase(mUser.getUid())) {
-//            createUser();
-//        } else {
-//            Toast.makeText(this, "Database user sudah ada.", Toast.LENGTH_SHORT).show();
-//        }
-
-//        if (!isUserExistInDatabase(mUser.getUid())) {
-//            createUser();
-//        } else {
-//            Toast.makeText(this, "Database user sudah ada.", Toast.LENGTH_SHORT).show();
-//        }
-
         checkIfUserExistInDatabase();
-
 
         fetchStatusAdmin();
 
