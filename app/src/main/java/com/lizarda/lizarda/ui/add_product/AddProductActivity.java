@@ -56,9 +56,13 @@ import butterknife.ButterKnife;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
 import static com.lizarda.lizarda.Const.FIREBASE.PRODUCT_DEFAULT_POPULARITY_COUNT;
+import static com.lizarda.lizarda.Const.KEY_EDIT_PRODUCT;
+import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
+import static com.lizarda.lizarda.Const.MODE_EDIT_PRODUCT;
 import static com.lizarda.lizarda.Const.NOT_SET;
 import static com.lizarda.lizarda.Const.TAG.DOWNLOAD_IMAGE;
 import static com.lizarda.lizarda.Const.TAG.SPINNER_KATEGORI;
+import static com.lizarda.lizarda.Const.TAG.TAG_EDIT_PRODUCT;
 import static com.lizarda.lizarda.Const.TAG.TAG_UPLOAD_PRODUCT;
 import static com.lizarda.lizarda.Const.TAG.URI;
 
@@ -100,6 +104,10 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
 
     private ProgressDialog mProgressDialog;
 
+    private Bundle mExtras;
+    private String mMode;
+    private String mProductId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +127,26 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
         mBtnInputProduct.setOnClickListener(this);
 
         setupFirebase();
+
+        mExtras = getIntent().getExtras();
+        if (mExtras != null) {
+            mMode = mExtras.getString(KEY_EDIT_PRODUCT);
+            mProductId = mExtras.getString(KEY_PRODUCT_ID);
+
+            Log.d(TAG_EDIT_PRODUCT, "onCreate: mExtras != null");
+            Log.d(TAG_EDIT_PRODUCT, "onCreate: mMode: " + mMode);
+            Log.d(TAG_EDIT_PRODUCT, "onCreate: mProductId: " + mProductId);
+
+            if (mMode != null && mMode.equals(MODE_EDIT_PRODUCT) && mProductId != null) {
+                Log.d(TAG_EDIT_PRODUCT, "onCreate: if: ");
+
+                // update ui
+                setTitle("Edit Product");
+                mBtnInputProduct.setText("Update product");
+                fetchProduct(mProductId);
+            }
+        }
+
         // userIdFromDatabase();
 
         mSpinnerJenisProduct.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -137,6 +165,47 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
 
     }
 
+    private Product mProduct;
+
+    private void fetchProduct(final String mProductId) {
+        Log.d(TAG_EDIT_PRODUCT, "fetchProduct: ");
+        mDatabaseRef.child(CHILD_PRODUCT).child(mProductId)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Product product = dataSnapshot.getValue(Product.class);
+                        updateUI(product);
+                        mProduct = product;
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void updateUI(Product product) {
+        Picasso.with(this).load(product.getPhotoUrl()).into(mIvProduct);
+
+        mEtNamaProduct.setText(product.getName());
+        mEtDescriptionProduct.setText(product.getDescription());
+        mEtHargaProduct.setText(String.valueOf(product.getPrice()));
+
+        mImageDownloadUrl = product.getPhotoUrl();
+
+        if (product.getCategory().equalsIgnoreCase("bunglon")) {
+            mSpinnerJenisProduct.setSelection(0);
+        } else if (product.getCategory().equalsIgnoreCase("ular")) {
+            mSpinnerJenisProduct.setSelection(1);
+        } else if (product.getCategory().equalsIgnoreCase("iguana")) {
+            mSpinnerJenisProduct.setSelection(2);
+        } else if (product.getCategory().equalsIgnoreCase("kura-kura")) {
+            mSpinnerJenisProduct.setSelection(3);
+        }
+
+    }
+
     // MARK: - Views
     @Override
     public void onClick(View v) {
@@ -148,12 +217,51 @@ public class AddProductActivity extends AppCompatActivity implements View.OnClic
                 if (isInputEmpty()) {
                     toast("Mohon cek input Anda.");
                 } else {
-                    showProgressDialog();
-                    writeToNodeProduct();
-                    hideProgressDialog();
+
+                    if (mMode != null && mMode.equals(MODE_EDIT_PRODUCT) && mProductId != null) {
+                        // update product
+                        showProgressDialog();
+                        updateToNodeProduct();
+                        hideProgressDialog();
+                    } else {
+                        showProgressDialog();
+                        writeToNodeProduct();
+                        hideProgressDialog();
+                    }
+
                 }
                 break;
         }
+    }
+
+    private void updateToNodeProduct() {
+
+        Product product = new Product(
+                mProductId,
+                mEtNamaProduct.getText().toString(),
+                mEtDescriptionProduct.getText().toString(),
+                mImageDownloadUrl,
+                mProduct.isSold(),
+                Double.parseDouble(mEtHargaProduct.getText().toString()),
+                mSpinnerJenisProduct.getSelectedItem().toString(),
+                mUser.getUid(),
+                mProduct.getPopularityCount()
+        );
+
+        mDatabaseRef.child(CHILD_PRODUCT).child(mProductId).setValue(product)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        toast("Sukses update produk.");
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        toast("Terjadi kesalahan. Mohon ulangi lagi.");
+                    }
+                });
     }
 
     @Override
