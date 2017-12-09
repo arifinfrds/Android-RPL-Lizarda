@@ -54,6 +54,10 @@ public interface Const {
 
         String CHILD_COMMENT = "Comment";
 
+        String CHILD_PRICE = "price";
+
+        String CHILD_NAME = "name";
+
 
         int LIMIT_EXPLORE = 10;
 

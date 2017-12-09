@@ -25,10 +25,14 @@ import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Product;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_NAME;
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_POPULARITY_COUNT;
+import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRICE;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_PRODUCT;
 import static com.lizarda.lizarda.Const.FIREBASE.CHILD_USER;
 import static com.lizarda.lizarda.Const.FIREBASE.LIMIT_EXPLORE;
@@ -68,30 +72,30 @@ public class AdminActivity extends AppCompatActivity implements AdminCallback {
     }
 
     private void fetchProduct() {
-        mDatabaseRef.child(CHILD_PRODUCT).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!mProducts.isEmpty()) {
-                    mProducts.clear();
-                }
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
-                        Product product = productDataSnapshot.getValue(Product.class);
-                        mProducts.add(product);
+        mDatabaseRef.child(CHILD_PRODUCT).orderByChild(CHILD_NAME)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (!mProducts.isEmpty()) {
+                            mProducts.clear();
+                        }
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot productDataSnapshot : dataSnapshot.getChildren()) {
+                                Product product = productDataSnapshot.getValue(Product.class);
+                                mProducts.add(product);
+                            }
+                            mProgressBar.setVisibility(View.GONE);
+                            setupRecyclerView();
+                        } else {
+                            toast("Tidak ada data.");
+                        }
                     }
-                    // updateUI
-                    mProgressBar.setVisibility(View.GONE);
-                    setupRecyclerView();
-                } else {
-                    toast("Tidak ada data.");
-                }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                    }
+                });
     }
 
     @Override
@@ -166,4 +170,7 @@ public class AdminActivity extends AppCompatActivity implements AdminCallback {
     public void onBackPressed() {
         moveTaskToBack(true);
     }
+
 }
+
+
