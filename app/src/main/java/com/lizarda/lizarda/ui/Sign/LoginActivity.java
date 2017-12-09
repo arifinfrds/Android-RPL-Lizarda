@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = (Button) findViewById(R.id.btn_login);
         btnReset = (Button) findViewById(R.id.btn_reset_password);
 
-        inputEmail.setText("test@gmail.com");
+        inputEmail.setText("admin@gmail.com");
         inputPassword.setText("123123");
 
         //Get Firebase auth instance
