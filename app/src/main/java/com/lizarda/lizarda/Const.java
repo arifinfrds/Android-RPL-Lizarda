@@ -16,6 +16,10 @@ public interface Const {
 
     String KEY_ARRAY_LIST_PRODUCT_ID = "KEY_ARRAY_LIST_PRODUCT_ID";
 
+    String KEY_EDIT_PRODUCT = "KEY_EDIT_PRODUCT";
+
+    String MODE_EDIT_PRODUCT = "MODE_EDIT_PRODUCT";
+
 
     interface TAG {
         String URI = "TAG_URI";
@@ -32,6 +36,8 @@ public interface Const {
         String TAG_BUY_PRODUCT = "TAG_BUY_PRODUCT";
 
         String TAG_UPLOAD_PRODUCT = "TAG_UPLOAD_PRODUCT";
+
+        String TAG_EDIT_PRODUCT = "TAG_EDIT_PRODUCT";
     }
 
     interface FIREBASE {

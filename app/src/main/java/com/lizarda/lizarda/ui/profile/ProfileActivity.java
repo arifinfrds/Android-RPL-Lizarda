@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +61,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     @BindView(R.id.rv_product_profile)
     RecyclerView mRvProduct;
+
+    @BindView(R.id.progress_bar_produk_profile)
+    ProgressBar mProgressBarProduct;
 
     private ArrayList<Product> mProducts;
     private ProfileProductAdapter mAdapter;
@@ -160,11 +164,12 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     setupRecyclerView();
                 }
+                mProgressBarProduct.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                mProgressBarProduct.setVisibility(View.GONE);
             }
         });
 
@@ -173,9 +178,10 @@ public class ProfileActivity extends AppCompatActivity {
     private void setupRecyclerView() {
 
         mRvProduct.setLayoutManager(
-                new GridLayoutManager(
+                new LinearLayoutManager(
                         this,
-                        2
+                        LinearLayoutManager.VERTICAL,
+                        false
                 )
         );
         mRvProduct.setNestedScrollingEnabled(false);

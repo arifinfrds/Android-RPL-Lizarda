@@ -6,12 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Product;
+import com.lizarda.lizarda.ui.add_product.AddProductActivity;
 import com.lizarda.lizarda.ui.admin.AdminAdapter;
 import com.lizarda.lizarda.ui.detail_produk.DetailProdukActivity;
 import com.squareup.picasso.Picasso;
@@ -21,7 +23,9 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.lizarda.lizarda.Const.KEY_EDIT_PRODUCT;
 import static com.lizarda.lizarda.Const.KEY_PRODUCT_ID;
+import static com.lizarda.lizarda.Const.MODE_EDIT_PRODUCT;
 import static com.lizarda.lizarda.Const.NOT_SET;
 
 /**
@@ -77,12 +81,21 @@ public class ProfileProductAdapter extends RecyclerView.Adapter<ProfileProductAd
                 navigateToEditProductActivity(product.getId());
             }
         });
+
+        holder.mBtnEditItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToEditProductActivity(product.getId());
+            }
+        });
+
     }
 
     private void navigateToEditProductActivity(String productId) {
-//        Intent intent = new Intent(mContext, DetailProdukActivity.class);
-//        intent.putExtra(KEY_PRODUCT_ID, productId);
-//        mContext.startActivity(intent);
+        Intent intent = new Intent(mContext, AddProductActivity.class);
+        intent.putExtra(KEY_PRODUCT_ID, productId);
+        intent.putExtra(KEY_EDIT_PRODUCT, MODE_EDIT_PRODUCT);
+        mContext.startActivity(intent);
     }
 
     @Override
@@ -104,6 +117,9 @@ public class ProfileProductAdapter extends RecyclerView.Adapter<ProfileProductAd
 
         @BindView(R.id.frameLayout_item_suggest_container)
         FrameLayout mContainerLayout;
+
+        @BindView(R.id.btn_edit_item_profile)
+        Button mBtnEditItem;
 
         public ViewHolder(View itemView) {
             super(itemView);
