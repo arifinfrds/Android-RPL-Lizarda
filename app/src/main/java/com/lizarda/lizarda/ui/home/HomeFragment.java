@@ -23,7 +23,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lizarda.lizarda.model.ui_model.Kategori;
-import com.lizarda.lizarda.model.deprecated.Model;
 import com.lizarda.lizarda.R;
 import com.lizarda.lizarda.model.Product;
 import com.lizarda.lizarda.ui.list_produk.ProductListActivity;
@@ -54,7 +53,6 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
     private String mParam2;
 
     // MARK: - Properties
-    private ArrayList<Model> mModels;
     private ArrayList<Product> mSuggestProducts;
     private ArrayList<Product> mPopularProducts;
     private ArrayList<Product> mNewListingProducts;
@@ -144,7 +142,6 @@ public class HomeFragment extends Fragment implements HomeKategoriCallback, View
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mModels = Model.generateModels();
         mSuggestProducts = new ArrayList<>();
         mPopularProducts = new ArrayList<>();
         mNewListingProducts = new ArrayList<>();
