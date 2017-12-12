@@ -46,6 +46,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "114499706932-630s71fuecpnbod13a97pfoa7na69986.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lizarda.lizarda",
+            "certificate_hash": "f38d36826c176afe8dbf34da88c313d3249f3178"
+          }
+        },
+        {
           "client_id": "114499706932-rfnms16ah1qbnv8t1ob5ukbr1o01ta31.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
